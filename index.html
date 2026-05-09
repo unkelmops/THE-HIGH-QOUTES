@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE HQ — Premium Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #c9a84c;
+  --gold-light: #f0d080;
+  --gold-dark: #8b6914;
+  --navy: #03060d;
+  --navy-mid: #080f1e;
+  --navy-card: #0a1525;
+  --cyan: #00d4ff;
+  --white: #e8eeff;
+  --glass: rgba(255,255,255,0.03);
+  --glass-border: rgba(201,168,76,0.2);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── CUSTOM CURSOR ─── */
+#cursor {
+  position: fixed;
+  width: 12px; height: 12px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+  mix-blend-mode: normal;
+}
+#cursor-ring {
+  position: fixed;
+  width: 40px; height: 40px;
+  border: 1px solid rgba(201,168,76,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.12s ease-out, width 0.3s, height 0.3s;
+}
+body:has(a:hover) #cursor, body:has(button:hover) #cursor { width: 20px; height: 20px; background: var(--gold-light); }
+body:has(a:hover) #cursor-ring, body:has(button:hover) #cursor-ring { width: 60px; height: 60px; border-color: rgba(201,168,76,0.8); }
+
+/* ─── STICKY NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 1.2rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s;
+  border-bottom: 1px solid transparent;
+}
+nav.scrolled {
+  background: rgba(3,6,13,0.85);
+  backdrop-filter: blur(20px);
+  border-color: rgba(201,168,76,0.12);
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links {
+  display: flex; gap: 2.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(200,220,255,0.5);
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  transition: color 0.2s;
+  font-weight: 400;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-cta {
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: 'Space Mono', monospace;
+  text-decoration: none;
+  background: linear-gradient(135deg, #c9a84c, #f0d080);
+  color: #060300;
+  transition: all 0.3s;
+  box-shadow: 0 0 30px rgba(201,168,76,0.3);
+}
+.nav-cta:hover { box-shadow: 0 0 50px rgba(201,168,76,0.55); }
+@media(max-width:768px){
+  .nav-links { display: none; }
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  perspective: 1000px;
+}
+
+/* Camera scene container — all layers move inside this */
+.camera-scene {
+  position: absolute;
+  inset: -10%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.layer-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 130% 90% at 50% -10%, #0d2050 0%, #03060d 65%);
+}
+
+.layer-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.07) 1px, transparent 1px);
+  background-size: 70px 70px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+.layer-dust {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.dust-particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: rgba(201,168,76,0.6);
+  border-radius: 50%;
+  animation: floatDust linear infinite;
+}
+
+@keyframes floatDust {
+  0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(-20px) translateX(var(--drift)); opacity: 0; }
+}
+
+.layer-orb-1 {
+  position: absolute;
+  width: 700px; height: 700px;
+  top: -200px; right: -200px;
+  background: radial-gradient(circle, rgba(201,168,76,0.14) 0%, transparent 65%);
+  border-radius: 50%;
+  filter: blur(40px);
+}
+.layer-orb-2 {
+  position: absolute;
+  width: 600px; height: 600px;
+  bottom: -150px; left: -150px;
+  background: radial-gradient(circle, rgba(0,212,255,0.1) 0%, transparent 65%);
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 2rem;
+  animation: heroReveal 1.4s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes heroReveal {
+  0% { opacity: 0; transform: translateY(60px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.hero-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.3s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(7rem, 20vw, 16rem);
+  letter-spacing: -2px;
+  line-height: 0.85;
+  background: linear-gradient(160deg, #fff 0%, var(--gold-light) 35%, var(--gold) 65%, #a07020 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 80px rgba(201,168,76,0.4));
+  opacity: 0;
+  animation: titleSlam 1s 0.15s cubic-bezier(0.16,1,0.3,1) forwards;
+  position: relative;
+}
+
+/* Scanline over title */
+.hero-title::after {
+  content: 'THE HQ';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  pointer-events: none;
+}
+
+@keyframes titleSlam {
+  0% { opacity: 0; transform: scale(1.15) translateY(-20px); filter: drop-shadow(0 0 0px rgba(201,168,76,0)); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: drop-shadow(0 0 80px rgba(201,168,76,0.4)); }
+}
+
+.hero-powered {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(0.65rem, 2vw, 0.85rem);
+  letter-spacing: 5px;
+  color: var(--cyan);
+  text-transform: uppercase;
+  margin: 1rem 0 0.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.hero-sub {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  color: rgba(180,210,255,0.5);
+  max-width: 440px;
+  margin: 0 auto 2.5rem;
+  font-weight: 300;
+  line-height: 1.75;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.65s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.hero-cta-row {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.btn-gold {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 16px 36px; border-radius: 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: 2.5px;
+  text-transform: uppercase; text-decoration: none; cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  background: linear-gradient(135deg, #c9a84c, #f0d080, #c9a84c);
+  color: #060300;
+  box-shadow: 0 0 50px rgba(201,168,76,0.4), inset 0 1px 0 rgba(255,255,255,0.35);
+  transition: all 0.3s;
+  border: none;
+  position: relative; overflow: hidden;
+}
+.btn-gold::after {
+  content: '';
+  position: absolute; top: -50%; left: -60%;
+  width: 35%; height: 200%;
+  background: rgba(255,255,255,0.3);
+  transform: skewX(-20deg);
+  animation: shimmer 3s 1.5s infinite;
+}
+@keyframes shimmer { 0%,100%{left:-60%} 50%{left:120%} }
+.btn-gold:hover { box-shadow: 0 0 70px rgba(201,168,76,0.65), inset 0 1px 0 rgba(255,255,255,0.35); transform: translateY(-2px); }
+
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 15px 36px; border-radius: 6px;
+  font-size: 11px; font-weight: 400; letter-spacing: 2.5px;
+  text-transform: uppercase; text-decoration: none; cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  background: transparent; color: var(--cyan);
+  border: 1px solid rgba(0,212,255,0.4);
+  box-shadow: 0 0 25px rgba(0,212,255,0.12), inset 0 0 25px rgba(0,212,255,0.04);
+  transition: all 0.3s;
+}
+.btn-outline:hover { box-shadow: 0 0 50px rgba(0,212,255,0.3); transform: translateY(-2px); }
+
+/* Scroll cue */
+.scroll-cue {
+  position: absolute; bottom: 2.5rem; left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0;
+  animation: fadeUp 1s 1.2s ease forwards;
+}
+.scroll-cue span {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 4px;
+  color: rgba(201,168,76,0.4); text-transform: uppercase;
+}
+.scroll-line {
+  width: 1px; height: 50px;
+  background: linear-gradient(to bottom, rgba(201,168,76,0.6), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse { 0%,100%{opacity:0.3;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.15)} }
+
+/* ─── SECTION BASE ─── */
+section { padding: 7rem 2rem; }
+.max-w { max-width: 1140px; margin: 0 auto; }
+
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 5px;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 0.75rem; font-weight: 400;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  letter-spacing: 1px; line-height: 1;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #fff 0%, rgba(200,220,255,0.75) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.divider {
+  width: 50px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin-bottom: 3rem;
+}
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.35s; }
+.reveal-delay-4 { transition-delay: 0.5s; }
+
+/* ─── EA CARD ─── */
+.ea-section { background: linear-gradient(180deg, #03060d 0%, #060e20 100%); position: relative; overflow: hidden; }
+
+.ea-section::before {
+  content: '';
+  position: absolute;
+  top: -200px; left: 50%; transform: translateX(-50%);
+  width: 120%; height: 600px;
+  background: radial-gradient(ellipse, rgba(0,212,255,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.ea-card {
+  position: relative;
+  border-radius: 20px;
+  padding: 3px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.5), rgba(0,212,255,0.2), rgba(201,168,76,0.15));
+  box-shadow: 0 60px 140px rgba(0,0,0,0.9), 0 0 80px rgba(201,168,76,0.1);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.1s ease-out;
+}
+.ea-card-inner {
+  background: linear-gradient(160deg, #0c1e3a 0%, #03060d 100%);
+  border-radius: 18px;
+  padding: 4rem 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.ea-card-inner::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.7), transparent);
+}
+.ea-card-scanlines {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
+  pointer-events: none;
+  border-radius: 18px;
+}
+.ea-badge {
+  display: inline-block;
+  padding: 5px 16px; border-radius: 100px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; font-weight: 400; letter-spacing: 3px;
+  text-transform: uppercase;
+  background: rgba(0,212,255,0.08); color: var(--cyan);
+  border: 1px solid rgba(0,212,255,0.25); margin-bottom: 1.5rem;
+}
+.ea-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(4rem, 10vw, 8rem);
+  letter-spacing: 2px; line-height: 1;
+  background: linear-gradient(135deg, #fff 0%, var(--cyan) 60%, #fff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 0 50px rgba(0,212,255,0.4));
+  margin-bottom: 0.5rem;
+}
+.ea-sub { font-size: 0.95rem; color: rgba(180,220,255,0.5); margin-bottom: 3rem; font-weight: 300; line-height: 1.6; }
+
+.feature-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 2rem; max-width: 620px; margin: 0 auto 3rem; text-align: left;
+}
+.feature-col h4 {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--cyan); margin-bottom: 1rem; font-weight: 400;
+}
+.feature-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; color: rgba(200,225,255,0.65);
+  margin-bottom: 12px; line-height: 1.5;
+}
+.feat-icon {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: linear-gradient(135deg, #00d4ff, #0060cc);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.feat-icon::after {
+  content: '';
+  width: 5px; height: 3px;
+  border-left: 1.5px solid white; border-bottom: 1.5px solid white;
+  transform: rotate(-45deg) translateY(-1px);
+}
+.ea-btn-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+/* ─── PRODUCTS ─── */
+.products-section { background: var(--navy); position: relative; }
+.products-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201,168,76,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.products-scroll {
+  display: flex; gap: 1.25rem;
+  overflow-x: auto; padding-bottom: 1.5rem;
+  scrollbar-width: thin; scrollbar-color: rgba(201,168,76,0.25) transparent;
+  scroll-snap-type: x mandatory;
+}
+.products-scroll::-webkit-scrollbar { height: 3px; }
+.products-scroll::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.35); border-radius: 2px; }
+
+.prod-card {
+  flex: 0 0 280px; border-radius: 14px; overflow: hidden;
+  background: var(--navy-card);
+  border: 1px solid rgba(201,168,76,0.12);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s, border-color 0.3s;
+  position: relative;
+  scroll-snap-align: start;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.prod-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.45), transparent);
+}
+.prod-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 50px 100px rgba(0,0,0,0.7), 0 0 40px rgba(201,168,76,0.12);
+  border-color: rgba(201,168,76,0.35);
+}
+.prod-img { width: 100%; height: 230px; object-fit: cover; display: block; }
+.prod-body { padding: 1.4rem; }
+.prod-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem; letter-spacing: 1px;
+  color: #fff; margin-bottom: 4px;
+}
+.prod-desc { font-size: 12px; color: rgba(200,220,255,0.4); margin-bottom: 1rem; line-height: 1.5; }
+.prod-price {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.4rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 4px;
+}
+.prod-delivery {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; color: rgba(200,220,255,0.3); margin-bottom: 1.25rem; letter-spacing: 1px;
+}
+.btn-card {
+  display: block; width: 100%; padding: 12px;
+  border-radius: 6px; font-size: 11px; font-weight: 400;
+  text-align: center; text-decoration: none; letter-spacing: 2px; text-transform: uppercase;
+  font-family: 'Space Mono', monospace;
+  background: linear-gradient(135deg, #c9a84c, #f0d080);
+  color: #060300;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+  transition: all 0.25s;
+  border: none; cursor: pointer;
+}
+.btn-card:hover { box-shadow: 0 8px 35px rgba(201,168,76,0.45); transform: translateY(-2px); }
+
+/* ─── PERFORMANCE ─── */
+.perf-section {
+  background: linear-gradient(180deg, #060e20 0%, #03060d 100%);
+  position: relative; overflow: hidden;
+}
+.perf-section::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; left: 50%; transform: translateX(-50%);
+  width: 80%; height: 300px;
+  background: radial-gradient(ellipse, rgba(0,212,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.perf-scroll {
+  display: flex; gap: 1.25rem;
+  overflow-x: auto; padding-bottom: 1.5rem;
+  scrollbar-width: thin; scrollbar-color: rgba(0,212,255,0.2) transparent;
+  scroll-snap-type: x mandatory;
+}
+.perf-scroll::-webkit-scrollbar { height: 3px; }
+.perf-scroll::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.3); border-radius: 2px; }
+
+.perf-card {
+  flex: 0 0 320px; border-radius: 12px; overflow: hidden;
+  border: 1px solid rgba(0,212,255,0.12);
+  background: rgba(10,21,37,0.8);
+  box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s;
+  scroll-snap-align: start;
+}
+.perf-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 70px rgba(0,212,255,0.12);
+}
+.perf-card img { width: 100%; display: block; }
+.perf-label {
+  padding: 0.75rem 1rem; text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; color: rgba(0,212,255,0.4);
+  letter-spacing: 2px; text-transform: uppercase;
+}
+
+/* ─── RESOURCES ─── */
+.resource-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; max-width: 860px; margin: 0 auto;
+}
+@media(max-width:600px){ .resource-grid { grid-template-columns: 1fr; } }
+
+.resource-card {
+  border-radius: 18px; padding: 3rem 2rem;
+  background: linear-gradient(160deg, #0c1e3a 0%, #03060d 100%);
+  border: 1px solid rgba(201,168,76,0.15);
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s;
+  position: relative; overflow: hidden;
+}
+.resource-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
+}
+.resource-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 40px 90px rgba(0,0,0,0.6), 0 0 30px rgba(201,168,76,0.08);
+}
+.resource-icon { font-size: 2.5rem; margin-bottom: 1.25rem; }
+.resource-card h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem; letter-spacing: 1px;
+  margin-bottom: 0.75rem; color: #fff;
+}
+.resource-card p { font-size: 13px; color: rgba(200,220,255,0.45); line-height: 1.7; margin-bottom: 1.75rem; }
+
+/* ─── FAQ ─── */
+.faq-wrap { max-width: 720px; margin: 0 auto; }
+.faq-item {
+  border: 1px solid rgba(201,168,76,0.12);
+  border-radius: 10px; margin-bottom: 0.75rem;
+  overflow: hidden; background: rgba(10,21,37,0.6);
+  transition: border-color 0.25s;
+}
+.faq-item.open { border-color: rgba(201,168,76,0.3); }
+.faq-q {
+  padding: 1.25rem 1.5rem;
+  font-weight: 500; font-size: 14px;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; color: rgba(220,235,255,0.85); gap: 1rem;
+}
+.faq-arrow {
+  font-family: 'Space Mono', monospace;
+  color: var(--gold); transition: transform 0.3s; font-size: 1rem; flex-shrink: 0;
+}
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.faq-item.open .faq-a { max-height: 200px; }
+.faq-a-inner { padding: 0 1.5rem 1.25rem; font-size: 13px; color: rgba(200,220,255,0.45); line-height: 1.8; }
+.faq-a-inner a { color: var(--cyan); text-decoration: none; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: #020407;
+  border-top: 1px solid rgba(201,168,76,0.1);
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+footer::before {
+  content: '';
+  position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 200px;
+  background: radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.footer-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem; letter-spacing: 4px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 1.25rem;
+}
+.footer-meta {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; color: rgba(200,220,255,0.25);
+  line-height: 2.2; letter-spacing: 1px;
+}
+.footer-meta a { color: var(--cyan); text-decoration: none; }
+.footer-risk {
+  margin-top: 2rem;
+  font-size: 10px; color: rgba(255,80,80,0.35);
+  max-width: 580px; margin-left: auto; margin-right: auto;
+  line-height: 1.8; font-family: 'Space Mono', monospace;
+}
+
+/* section divider line */
+.section-rule {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.15), transparent);
+}
+
+/* Collection heading row */
+.collection-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;
+}
+.collection-header .section-title { margin-bottom: 0; }
+
+/* ─── TICKER ─── */
+.ticker-wrap {
+  overflow: hidden; border-top: 1px solid rgba(201,168,76,0.1);
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+  padding: 0.75rem 0;
+  background: rgba(201,168,76,0.03);
+}
+.ticker-track {
+  display: flex; gap: 0; white-space: nowrap;
+  animation: ticker 22s linear infinite;
+}
+.ticker-item {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(201,168,76,0.4); padding: 0 3rem;
+}
+.ticker-item span { color: var(--gold); }
+@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ─── NAV ─── -->
+<nav id="nav">
+  <div class="nav-logo">THE HQ</div>
+  <ul class="nav-links">
+    <li><a href="#ea">MOPSENTRY EA</a></li>
+    <li><a href="#caps">Skull Caps</a></li>
+    <li><a href="#fitted">Fitted Caps</a></li>
+    <li><a href="#results">Results</a></li>
+  </ul>
+  <a href="mopsentryea.html" class="nav-cta">Get Access</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero" id="hero">
+  <div class="camera-scene" id="cameraScene">
+    <div class="layer-bg"></div>
+    <div class="layer-grid" id="layerGrid"></div>
+    <div class="layer-dust" id="layerDust"></div>
+    <div class="layer-orb-1" id="orbOne"></div>
+    <div class="layer-orb-2" id="orbTwo"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Professional Trading & Premium Accessories</div>
+    <h1 class="hero-title">THE HQ</h1>
+    <p class="hero-powered">Powered by MOPSENTRY EA</p>
+    <p class="hero-sub">Professional online shop for traders & premium headwear</p>
+    <div class="hero-cta-row">
+      <a href="mopsentryea.html" class="btn-gold">Get Access ↗</a>
+      <a href="https://t.me/mopsentrysetups" target="_blank" class="btn-outline">View Performance</a>
+    </div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track" id="ticker">
+    <span class="ticker-item">THE HQ <span>·</span></span>
+    <span class="ticker-item">MOPSENTRY EA <span>·</span></span>
+    <span class="ticker-item">85% WIN RATE <span>·</span></span>
+    <span class="ticker-item">SKULL CAPS <span>·</span></span>
+    <span class="ticker-item">FITTED CAPS <span>·</span></span>
+    <span class="ticker-item">FREE GUIDE <span>·</span></span>
+    <span class="ticker-item">LIVE RESULTS <span>·</span></span>
+    <span class="ticker-item">R99.99 CAPS <span>·</span></span>
+    <span class="ticker-item">THE HQ <span>·</span></span>
+    <span class="ticker-item">MOPSENTRY EA <span>·</span></span>
+    <span class="ticker-item">85% WIN RATE <span>·</span></span>
+    <span class="ticker-item">SKULL CAPS <span>·</span></span>
+    <span class="ticker-item">FITTED CAPS <span>·</span></span>
+    <span class="ticker-item">FREE GUIDE <span>·</span></span>
+    <span class="ticker-item">LIVE RESULTS <span>·</span></span>
+    <span class="ticker-item">R99.99 CAPS <span>·</span></span>
+  </div>
+</div>
+
+<!-- ─── EA CARD ─── -->
+<section class="ea-section" id="ea">
+  <div class="max-w">
+    <div class="ea-card reveal" id="eaCard">
+      <div class="ea-card-inner">
+        <div class="ea-card-scanlines"></div>
+        <div class="ea-badge">Automated Trading Bot</div>
+        <h2 class="ea-title">MOPSENTRY EA</h2>
+        <p class="ea-sub">High-probability multi-timeframe SMC system with 85% win rate</p>
+        <div class="feature-grid">
+          <div class="feature-col">
+            <h4>Key Features</h4>
+            <div class="feature-item"><div class="feat-icon"></div>4H bias analysis</div>
+            <div class="feature-item"><div class="feat-icon"></div>1H structure mapping</div>
+            <div class="feature-item"><div class="feat-icon"></div>5M/1M FVG + OTE entries</div>
+            <div class="feature-item"><div class="feat-icon"></div>Liquidity TP zones</div>
+          </div>
+          <div class="feature-col">
+            <h4>Risk Protection</h4>
+            <div class="feature-item"><div class="feat-icon"></div>News & volatility filter</div>
+            <div class="feature-item"><div class="feat-icon"></div>Dynamic risk logic</div>
+            <div class="feature-item"><div class="feat-icon"></div>Advanced trade management</div>
+            <div class="feature-item"><div class="feat-icon"></div>ECN broker optimized</div>
+          </div>
+        </div>
+        <div class="ea-btn-row">
+          <a href="mopsentryea.html" class="btn-gold">Get Access ↗</a>
+          <a href="https://t.me/mopsentrysetups" target="_blank" class="btn-outline">View Performance</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- ─── SKULL CAPS ─── -->
+<section class="products-section" id="caps">
+  <div class="max-w">
+    <div class="collection-header reveal">
+      <div>
+        <p class="section-label">Headwear Collection</p>
+        <h2 class="section-title">Skull Caps</h2>
+      </div>
+      <div class="divider" style="margin:0;"></div>
+    </div>
+    <div class="products-scroll reveal reveal-delay-1">
+      <div class="prod-card">
+        <img src="https://i.imgur.com/xuzhrKE.png" alt="Cross Model Skull Cap" class="prod-img">
+        <div class="prod-body">
+          <div class="prod-name">Cross Model</div>
+          <div class="prod-desc">Black embroidery on white, White, Gray</div>
+          <div class="prod-price">R99.99</div>
+          <div class="prod-delivery">Delivery ~6 days</div>
+          <a href="order.html#cross" class="btn-card">Order Now</a>
+        </div>
+      </div>
+      <div class="prod-card">
+        <img src="https://i.imgur.com/mS8B2yu.png" alt="Purpill Model Skull Cap" class="prod-img">
+        <div class="prod-body">
+          <div class="prod-name">Purpill Model</div>
+          <div class="prod-desc">Unique purpill design</div>
+          <div class="prod-price">R99.99</div>
+          <div class="prod-delivery">Delivery ~6 days</div>
+          <a href="order.html#purpill" class="btn-card">Order Now</a>
+        </div>
+      </div>
+      <div class="prod-card">
+        <img src="https://i.imgur.com/9OnLoJK.png" alt="Aesthetic Model Skull Cap" class="prod-img">
+        <div class="prod-body">
+          <div class="prod-name">Aesthetic Model</div>
+          <div class="prod-desc">Black, Dark Gray, Light Gray, Navy Blue, Yellow</div>
+          <div class="prod-price">R99.99</div>
+          <div class="prod-delivery">Delivery ~6 days</div>
+          <a href="order.html#aesthetic" class="btn-card">Order Now</a>
+        </div>
+      </div>
+      <div class="prod-card">
+        <div style="display:flex;height:230px;">
+          <img src="https://i.imgur.com/HaAqD0C.png" alt="X Model Black" style="width:50%;object-fit:cover;">
+          <img src="https://i.imgur.com/bBVrP8m.png" alt="X Model Gray" style="width:50%;object-fit:cover;">
+        </div>
+        <div class="prod-body">
+          <div class="prod-name">X Model</div>
+          <div class="prod-desc">Black & Gray</div>
+          <div class="prod-price">R99.99</div>
+          <div class="prod-delivery">Delivery ~6 days</div>
+          <a href="order.html#x" class="btn-card">Order Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- ─── FITTED CAPS ─── -->
+<section class="products-section" id="fitted" style="padding-top:4rem;">
+  <div class="max-w">
+    <div class="collection-header reveal">
+      <div>
+        <p class="section-label">Headwear Collection</p>
+        <h2 class="section-title">Fitted Caps</h2>
+      </div>
+      <div class="divider" style="margin:0;"></div>
+    </div>
+    <div class="products-scroll reveal reveal-delay-1">
+      <div class="prod-card">
+        <img src="https://i.imgur.com/nMCoKc5.png" alt="NY Edition" class="prod-img">
+        <div class="prod-body">
+          <div class="prod-name">NY Edition</div>
+          <div class="prod-desc">Premium fitted design with bold NY-inspired detailing</div>
+          <div class="prod-price">R129.99</div>
+          <div class="prod-delivery">Delivery ~6 days</div>
+          <a href="order.html#fitted-ny" class="btn-card">Order Now</a>
+        </div>
+      </div>
+      <div class="prod-card">
+        <img src="https://i.imgur.com/EjcAnGO.png" alt="Aesthetic Edition" class="prod-img">
+        <div class="prod-body">
+          <div class="prod-name">Aesthetic Edition</div>
+          <div class="prod-desc">Clean, modern aesthetic look – various color options</div>
+          <div class="prod-price">R129.99</div>
+          <div class="prod-delivery">Delivery ~6 days</div>
+          <a href="order.html#fitted-aesthetic" class="btn-card">Order Now</a>
+        </div>
+      </div>
+      <div class="prod-card">
+        <img src="https://i.imgur.com/80nXFJ9.png" alt="Soldier Edition" class="prod-img">
+        <div class="prod-body">
+          <div class="prod-name">Soldier Edition</div>
+          <div class="prod-desc">Tactical-inspired fitted cap with rugged detailing</div>
+          <div class="prod-price">R129.99</div>
+          <div class="prod-delivery">Delivery ~6 days</div>
+          <a href="order.html#fitted-soldier" class="btn-card">Order Now</a>
+        </div>
+      </div>
+      <div class="prod-card">
+        <img src="https://i.imgur.com/j1nl3Iy.png" alt="Classic" class="prod-img">
+        <div class="prod-body">
+          <div class="prod-name">Classic</div>
+          <div class="prod-desc">Timeless fitted style – clean and versatile</div>
+          <div class="prod-price">R129.99</div>
+          <div class="prod-delivery">Delivery ~6 days</div>
+          <a href="order.html#fitted-classic" class="btn-card">Order Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- ─── PERFORMANCE ─── -->
+<section class="perf-section" id="results">
+  <div class="max-w" style="text-align:center;">
+    <p class="section-label reveal">Track Record</p>
+    <h2 class="section-title reveal reveal-delay-1">Real Performance</h2>
+    <div class="divider reveal reveal-delay-2" style="margin:0 auto 3rem;"></div>
+    <div class="perf-scroll reveal reveal-delay-2">
+      <div class="perf-card">
+        <img src="https://i.imgur.com/ftlXvN6.png" alt="Live result 1">
+        <div class="perf-label">Live result example</div>
+      </div>
+      <div class="perf-card">
+        <img src="https://i.imgur.com/MeisssM.png" alt="Live result 2">
+        <div class="perf-label">Live result example</div>
+      </div>
+      <div class="perf-card">
+        <img src="https://i.imgur.com/1nG7CAD.png" alt="Live result 3">
+        <div class="perf-label">Live result example</div>
+      </div>
+    </div>
+    <p class="reveal reveal-delay-3" style="margin-top:2rem;font-family:'Space Mono',monospace;font-size:11px;color:rgba(200,220,255,0.25);letter-spacing:1px;">
+      More live updates in our <a href="https://t.me/mopsentrysetups" style="color:var(--cyan);text-decoration:none;">Telegram channel</a>
+    </p>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- ─── RESOURCES ─── -->
+<section>
+  <div class="max-w" style="text-align:center;">
+    <p class="section-label reveal">Resources</p>
+    <h2 class="section-title reveal reveal-delay-1">Free Access & Community</h2>
+    <div class="divider reveal reveal-delay-2" style="margin:0 auto 3rem;"></div>
+    <div class="resource-grid">
+      <div class="resource-card reveal reveal-delay-2">
+        <div class="resource-icon">📘</div>
+        <h3>Free MOPSENTRY Guide</h3>
+        <p>3-page PDF explaining what MOPSENTRY EA is, how it works, and the strategy behind it.</p>
+        <a href="https://t.me/mopsentrysetups/74" target="_blank" class="btn-gold" style="display:inline-flex;gap:8px;padding:14px 28px;">↓ Download Free</a>
+      </div>
+      <div class="resource-card reveal reveal-delay-3">
+        <div class="resource-icon">✈️</div>
+        <h3>Live Results & Updates</h3>
+        <p>Join @mopsentrysetups for real-time performance screenshots and verified statements.</p>
+        <a href="https://t.me/mopsentrysetups" target="_blank" class="btn-outline" style="display:inline-flex;gap:8px;padding:14px 28px;">Join Channel</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- ─── FAQ ─── -->
+<section style="padding-top:5rem;">
+  <div class="max-w" style="text-align:center;">
+    <p class="section-label reveal">Support</p>
+    <h2 class="section-title reveal reveal-delay-1">FAQ</h2>
+    <div class="divider reveal reveal-delay-2" style="margin:0 auto 3rem;"></div>
+    <div class="faq-wrap" style="text-align:left;">
+      <div class="faq-item reveal reveal-delay-1">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          <span>How does MOPSENTRY EA work?</span>
+          <span class="faq-arrow">⌄</span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">It checks the 4H trend direction first, then waits for the right movement before trading. Version 2 is coming soon (mobile version also coming). Check live examples in our <a href="https://t.me/mopsentrysetups">Telegram channel</a>.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-2">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          <span>What brokers do you recommend?</span>
+          <span class="faq-arrow">⌄</span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">ECN brokers like IC Markets, Pepperstone or FP Markets work best. Send an email to <a href="mailto:thabopopane2@gmail.com">thabopopane2@gmail.com</a> for personalized recommendations.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-3">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          <span>Is there support after purchase?</span>
+          <span class="faq-arrow">⌄</span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Yes — lifetime support via WhatsApp and our Telegram channel, including help with installation, settings, and updates.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-4">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          <span>What is your refund policy?</span>
+          <span class="faq-arrow">⌄</span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">7-day money-back guarantee if you're not satisfied after proper testing (conditions apply — no refunds after 7 days or if misused).</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-4">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          <span>Can I see live results?</span>
+          <span class="faq-arrow">⌄</span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Yes — join our free Telegram channel @mopsentrysetups for real-time screenshots, account statements and performance updates.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-logo">THE HQ</div>
+  <div class="footer-meta">
+    © 2026 THE HQ. All rights reserved.<br>
+    <a href="mailto:thabopopane2@gmail.com">thabopopane2@gmail.com</a> &nbsp;·&nbsp; WhatsApp: 073 266 1557
+  </div>
+  <div class="footer-risk">
+    Trading involves high risk of loss. No guarantees are made. Not FSCA regulated. Use at your own risk.
+  </div>
+</footer>
+
+<script>
+/* ─── CURSOR ─── */
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+
+function lerpCursor() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(lerpCursor);
+}
+lerpCursor();
+
+/* ─── NAV SCROLL STATE ─── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* ─── DUST PARTICLES ─── */
+const dust = document.getElementById('layerDust');
+for (let i = 0; i < 28; i++) {
+  const p = document.createElement('div');
+  p.className = 'dust-particle';
+  const size = Math.random() * 2.5 + 1;
+  p.style.cssText = `
+    left: ${Math.random() * 100}%;
+    bottom: 0;
+    width: ${size}px;
+    height: ${size}px;
+    --drift: ${(Math.random() - 0.5) * 120}px;
+    animation-duration: ${Math.random() * 18 + 14}s;
+    animation-delay: ${Math.random() * 15}s;
+    opacity: ${Math.random() * 0.5 + 0.2};
+  `;
+  dust.appendChild(p);
+}
+
+/* ─── HERO CAMERA: MOUSE PARALLAX ─── */
+const hero = document.getElementById('hero');
+const scene = document.getElementById('cameraScene');
+const grid = document.getElementById('layerGrid');
+const orbOne = document.getElementById('orbOne');
+const orbTwo = document.getElementById('orbTwo');
+
+let targetX = 0, targetY = 0;
+let currentX = 0, currentY = 0;
+
+hero.addEventListener('mousemove', e => {
+  const rect = hero.getBoundingClientRect();
+  // normalized -1 to 1
+  targetX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+  targetY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+});
+
+hero.addEventListener('mouseleave', () => {
+  targetX = 0; targetY = 0;
+});
+
+function animateCamera() {
+  // Smooth lerp toward target
+  currentX += (targetX - currentX) * 0.04;
+  currentY += (targetY - currentY) * 0.04;
+
+  // Camera scene: gentle 3D tilt (like tilting a camera)
+  scene.style.transform = `
+    rotateY(${currentX * 4}deg)
+    rotateX(${-currentY * 3}deg)
+    translateZ(0)
+  `;
+
+  // Grid parallax layer — slower, deeper
+  grid.style.transform = `translate(${currentX * -18}px, ${currentY * -12}px)`;
+
+  // Orbs drift in opposite directions for depth
+  orbOne.style.transform = `translate(${currentX * 25}px, ${currentY * 18}px)`;
+  orbTwo.style.transform = `translate(${currentX * -20}px, ${currentY * -14}px)`;
+
+  requestAnimationFrame(animateCamera);
+}
+animateCamera();
+
+/* ─── EA CARD 3D TILT ─── */
+const eaCard = document.getElementById('eaCard');
+eaCard.addEventListener('mousemove', e => {
+  const rect = eaCard.getBoundingClientRect();
+  const cx = (e.clientX - rect.left) / rect.width - 0.5;
+  const cy = (e.clientY - rect.top) / rect.height - 0.5;
+  eaCard.style.transform = `perspective(1200px) rotateY(${cx * 8}deg) rotateX(${-cy * 6}deg) scale(1.01)`;
+});
+eaCard.addEventListener('mouseleave', () => {
+  eaCard.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg) scale(1)';
+});
+
+/* ─── PRODUCT CARDS 3D TILT ─── */
+document.querySelectorAll('.prod-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const cx = (e.clientX - rect.left) / rect.width - 0.5;
+    const cy = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `perspective(800px) rotateY(${cx * 10}deg) rotateX(${-cy * 8}deg) translateY(-12px) scale(1.02)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+/* ─── SCROLL-DRIVEN PARALLAX (sections) ─── */
+function onScroll() {
+  const scrollY = window.scrollY;
+
+  // Hero parallax push — content moves up slower than scroll (camera pull-back)
+  const heroContent = document.querySelector('.hero-content');
+  if (heroContent) {
+    heroContent.style.transform = `translateY(${scrollY * 0.3}px)`;
+    heroContent.style.opacity = Math.max(0, 1 - scrollY / 500);
+  }
+
+  // Scroll cue fades
+  const scrollCue = document.querySelector('.scroll-cue');
+  if (scrollCue) scrollCue.style.opacity = Math.max(0, 1 - scrollY / 200);
+
+  // Reveal on scroll
+  document.querySelectorAll('.reveal').forEach(el => {
+    const top = el.getBoundingClientRect().top;
+    if (top < window.innerHeight * 0.88) {
+      el.classList.add('visible');
+    }
+  });
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll(); // initial check
+</script>
+</body>
+</html>
