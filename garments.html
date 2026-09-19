@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GARMENTS — DECORUM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#F5F3EC;--bg-raised:#FFFFFF;--fg:#111111;--grey:#767066;--line:#DEDACD;--rust:#A63D22;--font-head:'Helvetica Neue', Arial, sans-serif;--font-body:'Inter', Arial, sans-serif;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}*{animation:none !important;transition:none !important;}}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+.grain{position:fixed;inset:0;z-index:300;pointer-events:none;opacity:.035;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+nav{position:fixed;top:0;left:0;width:100%;padding:25px 35px;display:flex;justify-content:space-between;align-items:center;z-index:1000;mix-blend-mode:difference;}
+.logo{font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:-.5px;text-transform:uppercase;color:#f5f5f5;}
+.navlinks{display:flex;gap:28px;}
+.navlinks a{font-size:11px;text-transform:uppercase;letter-spacing:2px;transition:.3s;color:#f5f5f5;}
+.navlinks a.current{opacity:.4;}
+.navlinks a:hover{opacity:.4;}
+.page-hero{padding:150px 5vw 60px;border-bottom:1px solid var(--line);}
+.page-hero .hero-label{color:var(--grey);margin-bottom:18px;font-size:11px;letter-spacing:4px;}
+.page-hero h1{font-family:var(--font-head);font-weight:900;font-size:clamp(60px,13vw,180px);line-height:.78;letter-spacing:-8px;text-transform:uppercase;}
+.page-hero p{margin-top:24px;max-width:46ch;color:var(--grey);font-size:15px;line-height:1.7;}
+.project-spread{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line);}
+.project-image{min-height:78vh;position:relative;overflow:hidden;background:var(--bg-raised);display:flex;align-items:center;justify-content:center;transition:transform .4s ease;will-change:transform;}
+.project-image .garment-svg{width:60%;}
+.image-label{position:absolute;left:25px;bottom:25px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--fg);}
+.image-price{position:absolute;right:25px;bottom:25px;font-size:11px;letter-spacing:2px;color:var(--rust);}
+.source-tag{position:absolute;left:25px;top:25px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);}
+.source-tag a{color:var(--fg);border-bottom:1px solid var(--line);}
+footer{padding:35px 5vw;display:flex;justify-content:space-between;color:var(--grey);font-size:10px;letter-spacing:2px;text-transform:uppercase;border-top:1px solid var(--line);}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);}
+.reveal.in-view{opacity:1;transform:translateY(0);}
+@media(max-width:700px){
+nav{padding:20px;}
+.navlinks{gap:10px;}
+.navlinks a{font-size:8px;letter-spacing:1px;}
+.page-hero{padding:120px 25px 40px;}
+.page-hero h1{letter-spacing:-4px;}
+.project-spread{grid-template-columns:1fr;}
+.project-image{min-height:60vh;}
+footer{flex-direction:column;gap:16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<nav>
+    <a href="index.html" class="logo">DECORUM</a>
+    <div class="navlinks">
+        <a href="art.html">ART</a>
+        <a href="garments.html" class="current">GARMENTS</a>
+        <a href="process.html">PROCESS</a>
+        <a href="contact.html">CONTACT</a>
+    </div>
+</nav>
+
+<header class="page-hero">
+    <div class="hero-label">02 — DECORUM / GARMENTS</div>
+    <h1>The Garments.</h1>
+    <p>Each tee carries one artwork, printed exactly as it exists on the wall. Tap through to see where each piece came from.</p>
+</header>
+
+<div class="project-spread">
+    <article class="project-image reveal" data-tilt>
+        <span class="source-tag">From <a href="art.html">No. 001, Crowd, Motion</a></span>
+        <svg class="garment-svg" viewBox="0 0 300 340">
+            <path d="M90 20 L 120 5 L 150 25 L 180 5 L 210 20 L 230 55 L 205 75 L 205 320 L 95 320 L 95 75 L 70 55 Z" fill="none" stroke="#111" stroke-width="2"/>
+            <rect x="120" y="110" width="60" height="75" fill="none" stroke="#a39c8b" stroke-width="1.2"/>
+            <path d="M125 175 Q 150 150 175 170" stroke="#A63D22" stroke-width="1.5" fill="none"/>
+        </svg>
+        <div class="image-label">CROWD, MOTION TEE</div>
+        <div class="image-price">R280</div>
+    </article>
+
+    <article class="project-image reveal" data-tilt style="transition-delay:.05s">
+        <span class="source-tag">From <a href="art.html">No. 002, Subway Grid</a></span>
+        <svg class="garment-svg" viewBox="0 0 300 340">
+            <path d="M90 20 L 120 5 L 150 25 L 180 5 L 210 20 L 230 55 L 205 75 L 205 320 L 95 320 L 95 75 L 70 55 Z" fill="none" stroke="#111" stroke-width="2"/>
+            <line x1="125" y1="110" x2="125" y2="185" stroke="#a39c8b" stroke-width="1"/>
+            <path d="M120 150 C 140 130, 165 160, 180 140" stroke="#A63D22" stroke-width="1.5" fill="none"/>
+        </svg>
+        <div class="image-label">SUBWAY GRID TEE</div>
+        <div class="image-price">R280</div>
+    </article>
+
+    <article class="project-image reveal" data-tilt style="transition-delay:.1s">
+        <span class="source-tag">From <a href="art.html">No. 003, Overpass</a></span>
+        <svg class="garment-svg" viewBox="0 0 300 340">
+            <path d="M90 20 L 120 5 L 150 25 L 180 5 L 210 20 L 230 55 L 205 75 L 205 320 L 95 320 L 95 75 L 70 55 Z" fill="none" stroke="#111" stroke-width="2"/>
+            <circle cx="150" cy="140" r="26" fill="none" stroke="#a39c8b" stroke-width="1.2"/>
+            <circle cx="150" cy="140" r="4" fill="#A63D22"/>
+        </svg>
+        <div class="image-label">OVERPASS TEE</div>
+        <div class="image-price">R260</div>
+    </article>
+
+    <article class="project-image reveal" data-tilt style="transition-delay:.15s">
+        <span class="source-tag">From <a href="art.html">No. 004, Still, Figure</a></span>
+        <svg class="garment-svg" viewBox="0 0 300 340">
+            <path d="M90 20 L 120 5 L 150 25 L 180 5 L 210 20 L 230 55 L 205 75 L 205 320 L 95 320 L 95 75 L 70 55 Z" fill="none" stroke="#111" stroke-width="2"/>
+            <path d="M130 185 L 150 120 L 170 185 Z" fill="none" stroke="#a39c8b" stroke-width="1.2"/>
+            <circle cx="150" cy="120" r="2.5" fill="#A63D22"/>
+        </svg>
+        <div class="image-label">STILL, FIGURE TEE</div>
+        <div class="image-price">R260</div>
+    </article>
+</div>
+
+<footer>
+    <span>DECORUM</span>
+    <span>FROM STREET TO SHELF</span>
+    <span>BLOEMFONTEIN, ZA</span>
+</footer>
+
+<script>
+(function(){
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var maxTilt = 6;
+    document.querySelectorAll('[data-tilt]').forEach(function(el){
+      el.style.transformStyle = 'preserve-3d';
+      el.addEventListener('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        var x = e.clientX - rect.left, y = e.clientY - rect.top;
+        var rotY = ((x / rect.width) - 0.5) * maxTilt * 2;
+        var rotX = ((y / rect.height) - 0.5) * -maxTilt * 2;
+        el.style.transform = 'perspective(1200px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) scale(1.015)';
+      });
+      el.addEventListener('mouseleave', function(){
+        el.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)';
+      });
+    });
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){ if (entry.isIntersecting) entry.target.classList.add('in-view'); });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROCESS — DECORUM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#F5F3EC;--bg-raised:#FFFFFF;--fg:#111111;--grey:#767066;--line:#DEDACD;--rust:#A63D22;--font-head:'Helvetica Neue', Arial, sans-serif;--font-body:'Inter', Arial, sans-serif;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}*{animation:none !important;transition:none !important;}}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+.grain{position:fixed;inset:0;z-index:300;pointer-events:none;opacity:.035;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+nav{position:fixed;top:0;left:0;width:100%;padding:25px 35px;display:flex;justify-content:space-between;align-items:center;z-index:1000;mix-blend-mode:difference;}
+.logo{font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:-.5px;text-transform:uppercase;color:#f5f5f5;}
+.navlinks{display:flex;gap:28px;}
+.navlinks a{font-size:11px;text-transform:uppercase;letter-spacing:2px;transition:.3s;color:#f5f5f5;}
+.navlinks a.current{opacity:.4;}
+.navlinks a:hover{opacity:.4;}
+.page-hero{padding:150px 5vw 60px;border-bottom:1px solid var(--line);}
+.page-hero .hero-label{color:var(--grey);margin-bottom:18px;font-size:11px;letter-spacing:4px;}
+.page-hero h1{font-family:var(--font-head);font-weight:900;font-size:clamp(60px,13vw,180px);line-height:.78;letter-spacing:-8px;text-transform:uppercase;}
+.page-hero p{margin-top:24px;max-width:46ch;color:var(--grey);font-size:15px;line-height:1.7;}
+.process-block{padding:100px 8vw;display:grid;grid-template-columns:0.9fr 1.1fr;gap:64px;align-items:start;border-bottom:1px solid var(--line);}
+.process-steps{display:flex;flex-direction:column;gap:36px;}
+.process-step{display:grid;grid-template-columns:60px 1fr;gap:16px;}
+.process-step .step-num{font-family:var(--font-head);font-weight:900;font-size:22px;color:var(--rust);}
+.process-step h3{font-family:var(--font-head);font-weight:900;font-size:22px;text-transform:uppercase;letter-spacing:-1px;margin-bottom:8px;}
+.process-step p{color:var(--grey);font-size:15px;line-height:1.7;}
+.process-art{aspect-ratio:5/4;background:var(--bg-raised);border:1px solid var(--line);}
+.statement{min-height:70vh;padding:150px 8vw;display:flex;align-items:center;justify-content:space-between;gap:40px;}
+.statement h2{font-family:var(--font-head);font-weight:900;font-size:clamp(50px,9vw,140px);line-height:.8;letter-spacing:-8px;text-transform:uppercase;}
+.statement h2 span{color:var(--grey);}
+footer{padding:35px 5vw;display:flex;justify-content:space-between;color:var(--grey);font-size:10px;letter-spacing:2px;text-transform:uppercase;border-top:1px solid var(--line);}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);}
+.reveal.in-view{opacity:1;transform:translateY(0);}
+@media(max-width:700px){
+nav{padding:20px;}
+.navlinks{gap:10px;}
+.navlinks a{font-size:8px;letter-spacing:1px;}
+.page-hero{padding:120px 25px 40px;}
+.page-hero h1{letter-spacing:-4px;}
+.process-block{grid-template-columns:1fr;padding:80px 25px;}
+.statement{padding:100px 25px;flex-direction:column;align-items:flex-start;}
+footer{flex-direction:column;gap:16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<nav>
+    <a href="index.html" class="logo">DECORUM</a>
+    <div class="navlinks">
+        <a href="art.html">ART</a>
+        <a href="garments.html">GARMENTS</a>
+        <a href="process.html" class="current">PROCESS</a>
+        <a href="contact.html">CONTACT</a>
+    </div>
+</nav>
+
+<header class="page-hero">
+    <div class="hero-label">03 — DECORUM / PROCESS</div>
+    <h1>Street to Shelf.</h1>
+    <p>How one photograph becomes two products.</p>
+</header>
+
+<section class="process-block reveal">
+    <div class="process-steps">
+        <div class="process-step">
+            <span class="step-num">01</span>
+            <div>
+                <h3>Shot on the street</h3>
+                <p>No staging, no studio — every piece starts as a photograph taken around the city.</p>
+            </div>
+        </div>
+        <div class="process-step">
+            <span class="step-num">02</span>
+            <div>
+                <h3>Reworked into art</h3>
+                <p>The photograph is rebuilt as a standalone composition, framed and sold as a print.</p>
+            </div>
+        </div>
+        <div class="process-step">
+            <span class="step-num">03</span>
+            <div>
+                <h3>Printed onto the garment</h3>
+                <p>The finished artwork — not the raw photo — is what ends up on the tee, so the print on your wall and the one on your chest are the same piece.</p>
+            </div>
+        </div>
+    </div>
+    <div class="process-art">
+        <svg viewBox="0 0 500 400" width="100%" height="100%">
+            <rect width="500" height="400" fill="#fff"/>
+            <path d="M20 320 C 140 240, 220 300, 300 220 S 440 160, 480 200" stroke="#111" stroke-width="2.5" fill="none" opacity=".8"/>
+            <rect x="360" y="240" width="80" height="100" fill="none" stroke="#a39c8b" stroke-width="1.5"/>
+            <circle cx="140" cy="120" r="3" fill="#A63D22"/>
+        </svg>
+    </div>
+</section>
+
+<section class="statement reveal">
+    <h2>NOT<br>JUST A<br><span>SHIRT.</span></h2>
+</section>
+
+<footer>
+    <span>DECORUM</span>
+    <span>FROM STREET TO SHELF</span>
+    <span>BLOEMFONTEIN, ZA</span>
+</footer>
+
+<script>
+(function(){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){ if (entry.isIntersecting) entry.target.classList.add('in-view'); });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+})();
+</script>
+
+</body>
+</html>
