@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ART — DECORUM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#F5F3EC;--bg-raised:#FFFFFF;--fg:#111111;--grey:#767066;--line:#DEDACD;--rust:#A63D22;--font-head:'Helvetica Neue', Arial, sans-serif;--font-body:'Inter', Arial, sans-serif;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}*{animation:none !important;transition:none !important;}}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+.grain{position:fixed;inset:0;z-index:300;pointer-events:none;opacity:.035;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+nav{position:fixed;top:0;left:0;width:100%;padding:25px 35px;display:flex;justify-content:space-between;align-items:center;z-index:1000;mix-blend-mode:difference;}
+.logo{font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:-.5px;text-transform:uppercase;color:#f5f5f5;}
+.navlinks{display:flex;gap:28px;}
+.navlinks a{font-size:11px;text-transform:uppercase;letter-spacing:2px;transition:.3s;color:#f5f5f5;}
+.navlinks a.current{opacity:.4;}
+.navlinks a:hover{opacity:.4;}
+.page-hero{padding:150px 5vw 60px;border-bottom:1px solid var(--line);}
+.page-hero .hero-label{color:var(--grey);margin-bottom:18px;font-size:11px;letter-spacing:4px;}
+.page-hero h1{font-family:var(--font-head);font-weight:900;font-size:clamp(60px,13vw,180px);line-height:.78;letter-spacing:-8px;text-transform:uppercase;}
+.page-hero p{margin-top:24px;max-width:46ch;color:var(--grey);font-size:15px;line-height:1.7;}
+.project-large{width:100%;min-height:90vh;position:relative;overflow:hidden;background:var(--bg-raised);border-bottom:1px solid var(--line);transition:transform .4s ease;will-change:transform;}
+.project-large .art{width:100%;height:100%;min-height:90vh;display:block;}
+.project-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:40px 5vw;background:linear-gradient(to bottom, rgba(255,255,255,.55), transparent 35%, transparent 65%, rgba(255,255,255,.7));}
+.project-number{font-size:11px;letter-spacing:3px;color:var(--grey);}
+.project-title{display:flex;justify-content:space-between;align-items:end;gap:24px;}
+.project-title h2{font-family:var(--font-head);font-weight:900;font-size:clamp(50px,9vw,130px);line-height:.75;letter-spacing:-7px;text-transform:uppercase;color:var(--fg);}
+.project-title span{font-size:11px;letter-spacing:2px;color:var(--rust);white-space:nowrap;}
+.project-spread{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line);border-bottom:1px solid var(--line);}
+.project-image{min-height:78vh;position:relative;overflow:hidden;background:var(--bg-raised);display:flex;align-items:center;justify-content:center;transition:transform .4s ease;will-change:transform;}
+.image-label{position:absolute;left:25px;bottom:25px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--fg);}
+.image-price{position:absolute;right:25px;bottom:25px;font-size:11px;letter-spacing:2px;color:var(--rust);}
+.project-final{width:100%;min-height:90vh;position:relative;overflow:hidden;border-bottom:1px solid var(--line);transition:transform .4s ease;will-change:transform;}
+.project-final .art{width:100%;height:100%;min-height:90vh;display:block;}
+footer{padding:35px 5vw;display:flex;justify-content:space-between;color:var(--grey);font-size:10px;letter-spacing:2px;text-transform:uppercase;}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);}
+.reveal.in-view{opacity:1;transform:translateY(0);}
+@media(max-width:700px){
+nav{padding:20px;}
+.navlinks{gap:10px;}
+.navlinks a{font-size:8px;letter-spacing:1px;}
+.page-hero{padding:120px 25px 40px;}
+.page-hero h1{letter-spacing:-4px;}
+.project-large .art{min-height:65vh;}
+.project-overlay{padding:25px;}
+.project-title{flex-direction:column;align-items:flex-start;gap:20px;}
+.project-title h2{letter-spacing:-4px;}
+.project-spread{grid-template-columns:1fr;}
+.project-image{min-height:60vh;}
+.project-final .art{min-height:65vh;}
+footer{flex-direction:column;gap:16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<nav>
+    <a href="index.html" class="logo">DECORUM</a>
+    <div class="navlinks">
+        <a href="art.html" class="current">ART</a>
+        <a href="garments.html">GARMENTS</a>
+        <a href="process.html">PROCESS</a>
+        <a href="contact.html">CONTACT</a>
+    </div>
+</nav>
+
+<header class="page-hero">
+    <div class="hero-label">01 — DECORUM / ART</div>
+    <h1>The Art.</h1>
+    <p>Original pieces, available as fine-art prints. Every garment on the Garments page began here.</p>
+</header>
+
+<article class="project-large reveal" data-tilt>
+    <div class="art">
+        <svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+            <rect width="1400" height="900" fill="#FFFFFF"/>
+            <path d="M-40 620 C 260 460, 480 600, 700 420 S 1180 300, 1440 380" stroke="#111" stroke-width="5" fill="none" opacity=".85"/>
+            <path d="M-40 700 C 300 560, 520 680, 760 500 S 1220 380, 1440 460" stroke="#a39c8b" stroke-width="3" fill="none" opacity=".5"/>
+            <rect x="180" y="160" width="220" height="290" fill="#111" opacity=".05"/>
+            <rect x="180" y="160" width="220" height="290" fill="none" stroke="#111" stroke-width="2" opacity=".5"/>
+            <circle cx="1080" cy="240" r="10" fill="#A63D22"/>
+        </svg>
+    </div>
+    <div class="project-overlay">
+        <div class="project-number">PIECE 001 — CROWD, MOTION</div>
+        <div class="project-title">
+            <h2>CROWD<br>MOTION</h2>
+            <span>PRINT / R850</span>
+        </div>
+    </div>
+</article>
+
+<div class="project-spread">
+    <article class="project-image reveal" data-tilt>
+        <svg viewBox="0 0 400 500" width="60%" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="500" fill="#fff"/>
+            <line x1="40" y1="60" x2="40" y2="440" stroke="#111" stroke-width="1" opacity=".5"/>
+            <line x1="120" y1="60" x2="120" y2="440" stroke="#111" stroke-width="1" opacity=".25"/>
+            <path d="M20 250 C 120 150, 260 350, 380 220" stroke="#A63D22" stroke-width="2.5" fill="none"/>
+            <circle cx="200" cy="250" r="90" fill="none" stroke="#a39c8b" stroke-width="1"/>
+        </svg>
+        <div class="image-label">002 — SUBWAY GRID</div>
+        <div class="image-price">R850</div>
+    </article>
+    <article class="project-image reveal" data-tilt style="transition-delay:.08s">
+        <svg viewBox="0 0 400 500" width="60%" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="500" fill="#fff"/>
+            <circle cx="150" cy="180" r="70" fill="none" stroke="#111" stroke-width="2" opacity=".7"/>
+            <circle cx="260" cy="320" r="90" fill="none" stroke="#a39c8b" stroke-width="1.5"/>
+        </svg>
+        <div class="image-label">003 — OVERPASS</div>
+        <div class="image-price">R850</div>
+    </article>
+</div>
+
+<article class="project-final reveal" data-tilt>
+    <div class="art">
+        <svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+            <rect width="1400" height="900" fill="#F5F3EC"/>
+            <path d="M100 700 L 700 140 L 1300 700 Z" fill="none" stroke="#111" stroke-width="2" opacity=".75"/>
+            <path d="M300 700 L 700 340 L 1100 700 Z" fill="#111" opacity=".05"/>
+            <circle cx="700" cy="340" r="8" fill="#A63D22"/>
+        </svg>
+    </div>
+    <div class="project-overlay">
+        <div class="project-number">PIECE 004 — STILL, FIGURE</div>
+        <div class="project-title">
+            <h2>STILL<br>FIGURE</h2>
+            <span>PRINT / R650</span>
+        </div>
+    </div>
+</article>
+
+<footer>
+    <span>DECORUM</span>
+    <span>FROM STREET TO SHELF</span>
+    <span>BLOEMFONTEIN, ZA</span>
+</footer>
+
+<script>
+(function(){
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var maxTilt = 6;
+    document.querySelectorAll('[data-tilt]').forEach(function(el){
+      el.style.transformStyle = 'preserve-3d';
+      el.addEventListener('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        var x = e.clientX - rect.left, y = e.clientY - rect.top;
+        var rotY = ((x / rect.width) - 0.5) * maxTilt * 2;
+        var rotX = ((y / rect.height) - 0.5) * -maxTilt * 2;
+        el.style.transform = 'perspective(1200px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) scale(1.015)';
+      });
+      el.addEventListener('mouseleave', function(){
+        el.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)';
+      });
+    });
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){ if (entry.isIntersecting) entry.target.classList.add('in-view'); });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+})();
+</script>
+
+</body>
+</html>

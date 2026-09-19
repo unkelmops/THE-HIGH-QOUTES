@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DECORUM — FROM STREET TO SHELF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#F5F3EC;--bg-raised:#FFFFFF;--fg:#111111;--grey:#767066;--line:#DEDACD;--rust:#A63D22;--font-head:'Helvetica Neue', Arial, sans-serif;--font-body:'Inter', Arial, sans-serif;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}*{animation:none !important;transition:none !important;}}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);overflow-x:hidden;}
+body.gate-active{overflow:hidden;height:100svh;}
+.hero-label,.slate,.hero h1{animation-play-state:paused;}
+body.entered .hero-label,body.entered .slate,body.entered .hero h1{animation-play-state:running;}
+a{color:inherit;text-decoration:none;}
+.grain{position:fixed;inset:0;z-index:300;pointer-events:none;opacity:.035;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+#gate{position:fixed;inset:0;z-index:2000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px;transition:transform .7s cubic-bezier(.76,0,.24,1), opacity .6s ease;}
+#gate.unlocking{transform:translateY(-100%);opacity:.4;}
+.gate-logo{font-family:var(--font-head);font-weight:900;font-size:15px;letter-spacing:1px;text-transform:uppercase;}
+.gate-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--grey);text-align:center;padding:0 20px;}
+.gate-track{position:relative;width:min(320px, 80vw);height:64px;border:1px solid var(--line);background:var(--bg-raised);}
+.gate-target{position:absolute;right:6px;top:6px;bottom:6px;width:52px;display:flex;align-items:center;justify-content:center;opacity:.5;}
+.gate-target svg{width:34px;height:34px;}
+.gate-handle{position:absolute;left:6px;top:6px;bottom:6px;width:52px;background:var(--fg);display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:none;}
+.gate-handle:active{cursor:grabbing;}
+.gate-handle svg{width:26px;height:26px;}
+.gate-skip{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);border-bottom:1px solid var(--line);padding-bottom:2px;}
+nav{position:fixed;top:0;left:0;width:100%;padding:25px 35px;display:flex;justify-content:space-between;align-items:center;z-index:1000;mix-blend-mode:difference;}
+.logo{font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:-.5px;text-transform:uppercase;color:#f5f5f5;}
+.navlinks{display:flex;gap:28px;}
+.navlinks a{font-size:11px;text-transform:uppercase;letter-spacing:2px;transition:.3s;color:#f5f5f5;position:relative;}
+.navlinks a.current{opacity:.4;}
+.navlinks a:hover{opacity:.4;}
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;border-bottom:1px solid var(--line);}
+.letterbox{position:absolute;left:0;right:0;height:clamp(16px,3.5vh,48px);background:#000;z-index:3;pointer-events:none;}
+.letterbox.top{top:0;}
+.letterbox.bottom{bottom:0;}
+.hero-media{position:absolute;inset:0;z-index:0;overflow:hidden;perspective:1000px;}
+.hero-media video,.hero-media .fallback{width:100%;height:100%;object-fit:cover;animation:kenburns 24s ease-in-out infinite alternate;}
+@keyframes kenburns{from{transform:scale(1) translate(0,0) rotateZ(0deg);}to{transform:scale(1.14) translate(-1.5%,-1.5%) rotateZ(.6deg);}}
+.hero-media .fallback{background:radial-gradient(ellipse at 25% 20%, rgba(166,61,34,.14), transparent 55%),linear-gradient(180deg,#efece2 0%,#e3ded0 60%,#d3cdbb 100%);position:relative;}
+.hero-media .fallback svg{position:absolute;inset:0;width:100%;height:100%;opacity:.5;}
+.hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.02) 40%, rgba(0,0,0,.55) 100%);}
+.hero-top{position:relative;z-index:1;padding:150px 5vw 0;display:flex;justify-content:space-between;align-items:flex-start;}
+.hero-label{font-size:11px;letter-spacing:4px;color:#eee9dc;}
+.slate{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:3px;color:#eee9dc;opacity:0;animation:fade-in 1s ease .3s forwards;}
+.slate .rec-dot{width:6px;height:6px;border-radius:50%;background:var(--rust);animation:pulse 1.6s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
+@keyframes fade-in{from{opacity:0;}to{opacity:1;}}
+.hero-bottom{position:relative;z-index:1;padding:0 5vw 90px;}
+.hero h1{font-family:var(--font-head);font-weight:900;font-size:clamp(70px,15vw,220px);line-height:.72;letter-spacing:-9px;text-transform:uppercase;color:#151310;opacity:0;transform-origin:bottom left;transform:perspective(900px) rotateX(75deg) translateY(40px);animation:title-in3d 1.3s cubic-bezier(.16,1,.3,1) .5s forwards;}
+.hero h1 span{display:block;margin-left:13vw;color:var(--rust);}
+@keyframes title-in3d{from{opacity:0;transform:perspective(900px) rotateX(75deg) translateY(40px);}to{opacity:1;transform:perspective(900px) rotateX(0deg) translateY(0);}}
+.scroll-cue{position:absolute;right:5vw;bottom:clamp(30px,4vh,60px);z-index:1;font-size:11px;letter-spacing:3px;color:#eee9dc;writing-mode:vertical-rl;}
+.intro{padding:100px 8vw;display:flex;justify-content:space-between;gap:50px;border-bottom:1px solid var(--line);}
+.intro h2{font-family:var(--font-head);font-weight:900;font-size:clamp(40px,6vw,90px);line-height:.85;letter-spacing:-5px;text-transform:uppercase;}
+.intro-right{display:flex;flex-direction:column;align-items:flex-end;gap:30px;align-self:flex-end;}
+.intro p{max-width:420px;color:var(--grey);line-height:1.7;font-size:15px;text-align:right;}
+.cube-scene{width:64px;height:64px;perspective:400px;}
+.cube{width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:spin 14s linear infinite;}
+.cube div{position:absolute;width:64px;height:64px;border:1px solid var(--fg);background:var(--bg-raised);overflow:hidden;}
+.cube div svg{width:100%;height:100%;display:block;}
+.face-front{transform:translateZ(32px);}
+.face-back{transform:translateZ(-32px) rotateY(180deg);}
+.face-right{transform:rotateY(90deg) translateZ(32px);}
+.face-left{transform:rotateY(-90deg) translateZ(32px);}
+.face-top{transform:rotateX(90deg) translateZ(32px);border-color:var(--rust);}
+.face-bottom{transform:rotateX(-90deg) translateZ(32px);}
+@keyframes spin{from{transform:rotateX(0deg) rotateY(0deg);}to{transform:rotateX(360deg) rotateY(360deg);}}
+.menu-grid{border-top:1px solid var(--line);}
+.menu-tile{display:flex;justify-content:space-between;align-items:center;padding:44px 5vw;border-bottom:1px solid var(--line);transition:padding-left .3s ease, color .3s ease;}
+.menu-tile:hover{padding-left:6.2vw;color:var(--rust);}
+.menu-tile .num{font-size:12px;letter-spacing:2px;color:var(--grey);width:60px;}
+.menu-tile h2{font-family:var(--font-head);font-weight:900;font-size:clamp(36px,7vw,90px);letter-spacing:-4px;text-transform:uppercase;flex:1;}
+.menu-tile .arrow{font-size:28px;transform:translateX(0);transition:transform .3s ease;}
+.menu-tile:hover .arrow{transform:translateX(10px);}
+footer{padding:35px 5vw;display:flex;justify-content:space-between;color:var(--grey);font-size:10px;letter-spacing:2px;text-transform:uppercase;}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);}
+.reveal.in-view{opacity:1;transform:translateY(0);}
+@media(max-width:700px){
+nav{padding:20px;}
+.navlinks{gap:10px;}
+.navlinks a{font-size:8px;letter-spacing:1px;}
+.hero-top{padding:120px 25px 0;}
+.hero-bottom{padding:0 25px 60px;}
+.hero h1{letter-spacing:-5px;}
+.hero h1 span{margin-left:6vw;}
+.intro{padding:80px 25px;flex-direction:column;}
+.intro-right{align-items:flex-start;align-self:flex-start;}
+.intro p{text-align:left;}
+.menu-tile{padding:28px 25px;}
+.menu-tile:hover{padding-left:32px;}
+.menu-tile h2{letter-spacing:-2px;}
+footer{flex-direction:column;gap:16px;}
+}
+</style>
+</head>
+<body class="gate-active">
+
+<div id="gate">
+    <div class="gate-logo">DECORUM</div>
+    <div class="gate-label">Drag the art onto the shirt to enter</div>
+    <div class="gate-track" id="gateTrack">
+        <div class="gate-target">
+            <svg viewBox="0 0 64 64"><path d="M14 8 L 22 3 L 32 10 L 42 3 L 50 8 L 58 20 L 48 28 L 48 60 L 16 60 L 16 28 L 6 20 Z" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+        </div>
+        <div class="gate-handle" id="gateHandle">
+            <svg viewBox="0 0 64 64"><rect x="10" y="10" width="44" height="44" fill="none" stroke="#f5f3ec" stroke-width="2.5"/><circle cx="32" cy="32" r="7" fill="#f5f3ec"/></svg>
+        </div>
+    </div>
+    <a href="#" class="gate-skip" id="gateSkip">Skip intro</a>
+</div>
+
+<div class="grain"></div>
+
+<nav>
+    <a href="index.html" class="logo">DECORUM</a>
+    <div class="navlinks">
+        <a href="art.html">ART</a>
+        <a href="garments.html">GARMENTS</a>
+        <a href="process.html">PROCESS</a>
+        <a href="contact.html">CONTACT</a>
+    </div>
+</nav>
+
+<section class="hero" id="top">
+    <div class="letterbox top"></div>
+    <div class="letterbox bottom"></div>
+    <div class="hero-media">
+        <video autoplay muted loop playsinline>
+            <source src="https://i.imgur.com/ivTabVm.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="hero-top">
+        <div class="hero-label">01 — DECORUM / STREET TO SHELF</div>
+        <div class="slate"><span class="rec-dot"></span>SCENE 01</div>
+    </div>
+    <div class="hero-bottom">
+        <h1>SEEN.<span>WORN.</span></h1>
+    </div>
+    <span class="scroll-cue">SCROLL</span>
+</section>
+
+<section class="intro reveal">
+    <h2>PICTURES<br>BECOME<br>WEARABLE.</h2>
+    <div class="intro-right">
+        <div class="cube-scene">
+            <div class="cube">
+                <div class="face-front"><svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#fff"/><path d="M-4 44 C 10 30,20 40,32 26 S52 14,68 22" stroke="#111" stroke-width="2" fill="none"/></svg></div>
+                <div class="face-back"><svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#fff"/><line x1="14" y1="6" x2="14" y2="58" stroke="#111" stroke-width="1"/><line x1="30" y1="6" x2="30" y2="58" stroke="#a39c8b" stroke-width="1"/><circle cx="42" cy="30" r="10" fill="none" stroke="#A63D22" stroke-width="1.5"/></svg></div>
+                <div class="face-right"><svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#fff"/><path d="M10 54 L 32 10 L 54 54 Z" fill="none" stroke="#111" stroke-width="2"/></svg></div>
+                <div class="face-left"><svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#fff"/><rect x="16" y="16" width="32" height="32" fill="none" stroke="#111" stroke-width="2"/><circle cx="32" cy="32" r="4" fill="#A63D22"/></svg></div>
+                <div class="face-top"><svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#fff"/><path d="M-4 20 C 14 34,22 18,36 30 S54 44,68 30" stroke="#A63D22" stroke-width="2" fill="none"/></svg></div>
+                <div class="face-bottom"><svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#fff"/><circle cx="24" cy="24" r="14" fill="none" stroke="#111" stroke-width="1.5"/><circle cx="40" cy="42" r="8" fill="none" stroke="#a39c8b" stroke-width="1.5"/></svg></div>
+            </div>
+        </div>
+        <p>A record of DECORUM. Photographs taken on the street, reworked into standalone art, then printed onto the tee. Every piece exists twice — once on the wall, once on your back.</p>
+    </div>
+</section>
+
+<section class="menu-grid">
+    <a class="menu-tile reveal" href="art.html">
+        <span class="num">01</span>
+        <h2>Art</h2>
+        <span class="arrow">→</span>
+    </a>
+    <a class="menu-tile reveal" href="garments.html" style="transition-delay:.05s">
+        <span class="num">02</span>
+        <h2>Garments</h2>
+        <span class="arrow">→</span>
+    </a>
+    <a class="menu-tile reveal" href="process.html" style="transition-delay:.1s">
+        <span class="num">03</span>
+        <h2>Process</h2>
+        <span class="arrow">→</span>
+    </a>
+    <a class="menu-tile reveal" href="contact.html" style="transition-delay:.15s">
+        <span class="num">04</span>
+        <h2>Contact</h2>
+        <span class="arrow">→</span>
+    </a>
+</section>
+
+<footer>
+    <span>DECORUM</span>
+    <span>FROM STREET TO SHELF</span>
+    <span>BLOEMFONTEIN, ZA</span>
+</footer>
+
+<script>
+(function(){
+  var gate = document.getElementById('gate');
+  var track = document.getElementById('gateTrack');
+  var handle = document.getElementById('gateHandle');
+  var skip = document.getElementById('gateSkip');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var unlocked = false;
+  function unlock(){
+    if (unlocked) return;
+    unlocked = true;
+    gate.classList.add('unlocking');
+    document.body.classList.remove('gate-active');
+    document.body.classList.add('entered');
+    window.setTimeout(function(){ gate.style.display = 'none'; }, reduced ? 0 : 750);
+  }
+  if (reduced) { unlock(); }
+  else {
+    skip.addEventListener('click', function(e){ e.preventDefault(); unlock(); });
+    var dragging = false, startX = 0, startLeft = 0, maxLeft = 0;
+    function bounds(){ maxLeft = track.clientWidth - handle.offsetWidth - 12; }
+    bounds();
+    window.addEventListener('resize', bounds);
+    function pointerDown(e){
+      dragging = true;
+      startX = (e.touches ? e.touches[0].clientX : e.clientX);
+      startLeft = parseFloat(handle.style.left || 6);
+      handle.style.transition = 'none';
+    }
+    function pointerMove(e){
+      if (!dragging) return;
+      var x = (e.touches ? e.touches[0].clientX : e.clientX);
+      var delta = x - startX;
+      var left = Math.min(Math.max(6, startLeft + delta), maxLeft);
+      handle.style.left = left + 'px';
+    }
+    function pointerUp(){
+      if (!dragging) return;
+      dragging = false;
+      handle.style.transition = 'left .3s ease';
+      var left = parseFloat(handle.style.left || 6);
+      var progress = left / maxLeft;
+      if (progress > 0.82) {
+        handle.style.left = maxLeft + 'px';
+        window.setTimeout(unlock, 200);
+      } else {
+        handle.style.left = '6px';
+      }
+    }
+    handle.addEventListener('mousedown', pointerDown);
+    handle.addEventListener('touchstart', pointerDown, {passive:true});
+    window.addEventListener('mousemove', pointerMove);
+    window.addEventListener('touchmove', pointerMove, {passive:true});
+    window.addEventListener('mouseup', pointerUp);
+    window.addEventListener('touchend', pointerUp);
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) entry.target.classList.add('in-view');
+    });
+  }, {threshold:0.2});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+})();
+</script>
+
+</body>
+</html>
