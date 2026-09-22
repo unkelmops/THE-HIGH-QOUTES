@@ -1,0 +1,1653 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DECORUM</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#000;
+  --bg-raised:#090909;
+  --fg:#EDE8DD;
+  --grey:#77736B;
+  --line:#20201E;
+  --gold:#B99A2B;
+
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-sans:'Inter',Arial,sans-serif;
+}
+
+html{scroll-behavior:smooth}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important;
+  }
+}
+
+body{
+  background:#000;
+  color:var(--fg);
+  font-family:var(--font-sans);
+  font-weight:300;
+  overflow-x:hidden;
+}
+
+body.gate-active{
+  overflow:hidden;
+  height:100svh;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+/* =========================
+   GRAIN
+========================= */
+
+.grain{
+  position:fixed;
+  inset:0;
+  z-index:300;
+  pointer-events:none;
+  opacity:.035;
+  mix-blend-mode:overlay;
+
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* =========================
+   ENTRY
+========================= */
+
+#gate{
+  position:fixed;
+  inset:0;
+  z-index:2000;
+
+  background:#000;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  gap:34px;
+
+  transition:
+    transform .8s cubic-bezier(.76,0,.24,1),
+    opacity .6s ease;
+}
+
+#gate.unlocking{
+  transform:translateY(-100%);
+  opacity:.3;
+}
+
+.gate-logo{
+  font-family:var(--font-serif);
+  font-style:italic;
+  font-weight:500;
+  font-size:26px;
+  letter-spacing:1px;
+}
+
+.gate-label{
+  font-size:10px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--grey);
+  text-align:center;
+  padding:0 20px;
+}
+
+.gate-track{
+  position:relative;
+  width:min(300px,78vw);
+  height:1px;
+  background:var(--line);
+  margin-top:8px;
+}
+
+.gate-target{
+  position:absolute;
+  right:-6px;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  width:12px;
+  height:12px;
+
+  border:1px solid var(--gold);
+  border-radius:50%;
+}
+
+.gate-handle{
+  position:absolute;
+  left:-7px;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  width:14px;
+  height:14px;
+
+  border-radius:50%;
+  background:var(--gold);
+
+  cursor:grab;
+  touch-action:none;
+}
+
+.gate-handle:active{
+  cursor:grabbing;
+}
+
+.gate-skip{
+  font-size:9px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--grey);
+
+  border-bottom:1px solid var(--line);
+
+  padding-bottom:3px;
+  margin-top:12px;
+}
+
+/* =========================
+   NAV
+========================= */
+
+nav{
+  position:fixed;
+
+  top:0;
+  left:0;
+
+  width:100%;
+
+  padding:28px 5vw;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  z-index:1000;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.85),
+      transparent
+    );
+}
+
+.logo{
+  font-family:var(--font-serif);
+  font-style:italic;
+  font-size:20px;
+  letter-spacing:.5px;
+}
+
+.navlinks{
+  display:flex;
+  gap:34px;
+}
+
+.navlinks a{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:2.5px;
+
+  color:var(--grey);
+
+  position:relative;
+  padding-bottom:4px;
+}
+
+.navlinks a::after{
+  content:"";
+
+  position:absolute;
+  left:0;
+  bottom:0;
+
+  width:0;
+  height:1px;
+
+  background:var(--gold);
+
+  transition:width .3s ease;
+}
+
+.navlinks a:hover{
+  color:var(--fg);
+}
+
+.navlinks a:hover::after{
+  width:100%;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+  position:relative;
+
+  min-height:100svh;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  overflow:hidden;
+
+  border-bottom:1px solid var(--line);
+}
+
+.hero-media{
+  position:absolute;
+  inset:0;
+
+  z-index:0;
+
+  overflow:hidden;
+}
+
+.hero-media .fallback{
+  width:100%;
+  height:100%;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 30%,
+      rgba(185,154,43,.045),
+      transparent 55%
+    ),
+    #000;
+
+  animation:
+    driftzoom 30s ease-in-out infinite alternate;
+
+  opacity:.75;
+}
+
+@keyframes driftzoom{
+  from{transform:scale(1)}
+  to{transform:scale(1.1)}
+}
+
+.hero-media::after{
+  content:"";
+
+  position:absolute;
+  inset:0;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 45%,
+      rgba(0,0,0,.05),
+      rgba(0,0,0,.94) 80%
+    );
+}
+
+.hero-content{
+  position:relative;
+  z-index:1;
+
+  text-align:center;
+
+  padding:0 20px;
+}
+
+.hero-rule{
+  width:1px;
+  height:60px;
+
+  background:
+    linear-gradient(
+      var(--gold),
+      transparent
+    );
+
+  margin:0 auto 28px;
+
+  opacity:0;
+
+  animation:
+    rule-in 1.2s ease .2s forwards;
+}
+
+@keyframes rule-in{
+  from{
+    opacity:0;
+    height:0;
+  }
+
+  to{
+    opacity:1;
+    height:60px;
+  }
+}
+
+.hero-eyebrow{
+  font-size:10px;
+
+  letter-spacing:5px;
+
+  text-transform:uppercase;
+
+  color:var(--grey);
+
+  margin-bottom:22px;
+
+  opacity:0;
+
+  animation:
+    fade-in 1s ease .6s forwards;
+}
+
+.hero h1{
+  font-family:var(--font-serif);
+  font-style:italic;
+  font-weight:400;
+
+  font-size:clamp(52px,10vw,150px);
+
+  line-height:1;
+
+  opacity:0;
+
+  filter:blur(10px);
+
+  animation:
+    title-in
+    1.6s
+    cubic-bezier(.16,1,.3,1)
+    .9s
+    forwards;
+}
+
+.hero h1 em{
+  color:var(--gold);
+}
+
+@keyframes title-in{
+  from{
+    opacity:0;
+    filter:blur(10px);
+    transform:translateY(20px);
+  }
+
+  to{
+    opacity:1;
+    filter:blur(0);
+    transform:translateY(0);
+  }
+}
+
+.hero p{
+  margin-top:26px;
+
+  font-size:15px;
+
+  color:var(--grey);
+
+  max-width:38ch;
+
+  margin-left:auto;
+  margin-right:auto;
+
+  line-height:1.8;
+
+  opacity:0;
+
+  animation:
+    fade-in 1s ease 1.6s forwards;
+}
+
+@keyframes fade-in{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+.scroll-cue{
+  position:absolute;
+
+  bottom:34px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  font-size:9px;
+
+  letter-spacing:3px;
+
+  color:var(--grey);
+
+  text-transform:uppercase;
+}
+
+/* =========================
+   INTRO
+========================= */
+
+.intro{
+  padding:150px 8vw;
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:80px;
+
+  align-items:center;
+
+  border-bottom:1px solid var(--line);
+}
+
+.intro-quote{
+  font-family:var(--font-serif);
+
+  font-style:italic;
+
+  font-weight:400;
+
+  font-size:
+    clamp(
+      28px,
+      3.4vw,
+      44px
+    );
+
+  line-height:1.35;
+}
+
+.intro-quote .gold{
+  color:var(--gold);
+}
+
+.intro-right{
+  display:flex;
+  flex-direction:column;
+
+  gap:34px;
+}
+
+.intro-right p{
+  font-size:14px;
+
+  color:var(--grey);
+
+  line-height:1.9;
+
+  max-width:42ch;
+}
+
+/* =========================
+   CUBE
+========================= */
+
+.cube-scene{
+  width:70px;
+  height:70px;
+
+  perspective:450px;
+}
+
+.cube{
+  width:100%;
+  height:100%;
+
+  position:relative;
+
+  transform-style:preserve-3d;
+
+  animation:
+    spin 20s linear infinite;
+}
+
+.cube div{
+  position:absolute;
+
+  width:70px;
+  height:70px;
+
+  border:
+    1px solid
+    rgba(185,154,43,.55);
+
+  background:
+    rgba(185,154,43,.02);
+}
+
+.face-front{
+  transform:translateZ(35px);
+}
+
+.face-back{
+  transform:
+    translateZ(-35px)
+    rotateY(180deg);
+}
+
+.face-right{
+  transform:
+    rotateY(90deg)
+    translateZ(35px);
+}
+
+.face-left{
+  transform:
+    rotateY(-90deg)
+    translateZ(35px);
+}
+
+.face-top{
+  transform:
+    rotateX(90deg)
+    translateZ(35px);
+}
+
+.face-bottom{
+  transform:
+    rotateX(-90deg)
+    translateZ(35px);
+}
+
+@keyframes spin{
+  from{
+    transform:
+      rotateX(0)
+      rotateY(0);
+  }
+
+  to{
+    transform:
+      rotateX(360deg)
+      rotateY(360deg);
+  }
+}
+
+/* =========================
+   DISCOVERY
+========================= */
+
+.directory{
+  padding:
+    130px
+    8vw
+    150px;
+
+  border-bottom:
+    1px solid var(--line);
+}
+
+.directory-head{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:end;
+
+  margin-bottom:80px;
+}
+
+.directory-kicker{
+  font-size:9px;
+
+  letter-spacing:4px;
+
+  text-transform:uppercase;
+
+  color:var(--grey);
+}
+
+.directory-title{
+  font-family:var(--font-serif);
+
+  font-style:italic;
+
+  font-weight:400;
+
+  font-size:
+    clamp(
+      40px,
+      6vw,
+      76px
+    );
+}
+
+.dir-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(2,1fr);
+
+  border-top:
+    1px solid var(--line);
+
+  border-left:
+    1px solid var(--line);
+}
+
+.dir-item{
+  position:relative;
+
+  min-height:42vh;
+
+  padding:40px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  justify-content:space-between;
+
+  overflow:hidden;
+
+  border-right:
+    1px solid var(--line);
+
+  border-bottom:
+    1px solid var(--line);
+
+  transition:
+    background .5s ease;
+}
+
+.dir-item::before{
+  content:"";
+
+  position:absolute;
+  inset:0;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(185,154,43,.055),
+      transparent 62%
+    );
+
+  opacity:0;
+
+  transition:
+    opacity .5s ease;
+}
+
+.dir-item:hover{
+  background:var(--bg-raised);
+}
+
+.dir-item:hover::before{
+  opacity:1;
+}
+
+.dir-num{
+  position:relative;
+
+  font-family:var(--font-serif);
+
+  font-style:italic;
+
+  font-size:
+    clamp(
+      90px,
+      13vw,
+      180px
+    );
+
+  line-height:.7;
+
+  color:
+    rgba(238,234,226,.09);
+
+  transition:
+    .6s
+    cubic-bezier(.16,1,.3,1);
+}
+
+.dir-item:hover .dir-num{
+  color:
+    rgba(185,154,43,.72);
+
+  transform:
+    translateX(12px);
+}
+
+.dir-bottom{
+  position:relative;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:end;
+}
+
+.dir-item h2{
+  font-family:var(--font-serif);
+
+  font-style:italic;
+
+  font-weight:400;
+
+  font-size:
+    clamp(
+      30px,
+      4.5vw,
+      54px
+    );
+}
+
+.dir-arrow{
+  font-family:var(--font-serif);
+
+  font-size:22px;
+
+  color:var(--grey);
+
+  transition:.4s;
+}
+
+.dir-item:hover h2{
+  color:var(--gold);
+}
+
+.dir-item:hover .dir-arrow{
+  color:var(--gold);
+
+  transform:
+    translateX(6px);
+}
+
+.dir-note{
+  position:absolute;
+
+  right:40px;
+  top:40px;
+
+  font-size:8px;
+
+  letter-spacing:3px;
+
+  text-transform:uppercase;
+
+  color:var(--grey);
+
+  opacity:0;
+
+  transition:.4s;
+}
+
+.dir-item:hover .dir-note{
+  opacity:1;
+}
+
+/* =========================
+   SHOP
+========================= */
+
+.shop{
+  min-height:75vh;
+
+  padding:
+    150px
+    8vw;
+
+  display:grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap:80px;
+
+  align-items:center;
+
+  border-bottom:
+    1px solid var(--line);
+}
+
+.shop-copy .shop-kicker{
+  display:block;
+
+  font-size:9px;
+
+  letter-spacing:4px;
+
+  text-transform:uppercase;
+
+  color:var(--grey);
+
+  margin-bottom:24px;
+}
+
+.shop-copy h2{
+  font-family:var(--font-serif);
+
+  font-style:italic;
+
+  font-weight:400;
+
+  font-size:
+    clamp(
+      70px,
+      10vw,
+      140px
+    );
+
+  line-height:.8;
+}
+
+.shop-copy p{
+  max-width:34ch;
+
+  margin-top:30px;
+
+  font-size:13px;
+
+  line-height:1.9;
+
+  color:var(--grey);
+}
+
+.shop-link{
+  display:inline-flex;
+
+  align-items:center;
+
+  gap:18px;
+
+  margin-top:38px;
+
+  padding-bottom:8px;
+
+  border-bottom:
+    1px solid var(--line);
+
+  font-size:9px;
+
+  letter-spacing:3px;
+
+  text-transform:uppercase;
+
+  transition:
+    gap .4s ease,
+    color .4s ease,
+    border-color .4s ease;
+}
+
+.shop-link:hover{
+  gap:28px;
+
+  color:var(--gold);
+
+  border-color:var(--gold);
+}
+
+.shop-mark{
+  min-height:55vh;
+
+  border:
+    1px solid var(--line);
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  overflow:hidden;
+
+  position:relative;
+
+  background:
+    radial-gradient(
+      circle at center,
+      #101010,
+      #000 70%
+    );
+}
+
+.shop-mark::before{
+  content:"SHOP";
+
+  position:absolute;
+
+  font-family:var(--font-serif);
+
+  font-style:italic;
+
+  font-size:
+    clamp(
+      100px,
+      20vw,
+      300px
+    );
+
+  color:
+    rgba(238,234,226,.025);
+
+  transform:
+    rotate(-10deg);
+
+  white-space:nowrap;
+}
+
+.shop-mark span{
+  position:relative;
+
+  font-family:var(--font-serif);
+
+  font-style:italic;
+
+  font-size:34px;
+
+  color:var(--gold);
+
+  opacity:.8;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+  padding:36px 5vw;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  color:var(--grey);
+
+  font-size:9px;
+
+  letter-spacing:2px;
+
+  text-transform:uppercase;
+
+  border-top:1px solid var(--line);
+}
+
+footer a:hover{
+  color:var(--fg);
+}
+
+/* =========================
+   REVEAL
+========================= */
+
+.reveal{
+  opacity:0;
+
+  transform:translateY(30px);
+
+  transition:
+    opacity 1s cubic-bezier(.16,1,.3,1),
+    transform 1s cubic-bezier(.16,1,.3,1);
+}
+
+.reveal.in-view{
+  opacity:1;
+
+  transform:translateY(0);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:760px){
+
+  nav{
+    padding:22px 24px;
+  }
+
+  .navlinks{
+    gap:16px;
+  }
+
+  .navlinks a{
+    font-size:8px;
+    letter-spacing:1.5px;
+  }
+
+  .intro{
+    grid-template-columns:1fr;
+
+    padding:
+      100px
+      24px;
+
+    gap:50px;
+  }
+
+  .directory{
+    padding:
+      100px
+      24px
+      110px;
+  }
+
+  .directory-head{
+    align-items:flex-start;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    margin-bottom:50px;
+  }
+
+  .dir-grid{
+    grid-template-columns:1fr;
+  }
+
+  .dir-item{
+    min-height:44vh;
+
+    padding:30px;
+  }
+
+  .dir-note{
+    right:30px;
+    top:30px;
+  }
+
+  .shop{
+    grid-template-columns:1fr;
+
+    padding:
+      100px
+      24px;
+
+    gap:55px;
+  }
+
+  .shop-mark{
+    min-height:45vh;
+  }
+
+  footer{
+    flex-direction:column;
+
+    gap:14px;
+  }
+}
+</style>
+</head>
+
+<body class="gate-active">
+
+<!-- ENTRY -->
+
+<div id="gate">
+
+  <div class="gate-logo">
+    DECORUM
+  </div>
+
+  <div class="gate-label">
+    Draw the line to enter
+  </div>
+
+  <div class="gate-track" id="gateTrack">
+
+    <div class="gate-target"></div>
+
+    <div
+      class="gate-handle"
+      id="gateHandle">
+    </div>
+
+  </div>
+
+  <a
+    href="#"
+    class="gate-skip"
+    id="gateSkip">
+    Skip
+  </a>
+
+</div>
+
+<div class="grain"></div>
+
+<!-- NAV -->
+
+<nav>
+
+  <a
+    href="index.html"
+    class="logo">
+    Decorum
+  </a>
+
+  <div class="navlinks">
+
+    <a href="#discovery">
+      Discover
+    </a>
+
+    <a href="shop.html">
+      Shop
+    </a>
+
+  </div>
+
+</nav>
+
+<!-- HERO -->
+
+<section class="hero">
+
+  <div class="hero-media">
+    <div class="fallback"></div>
+  </div>
+
+  <div class="hero-content">
+
+    <div class="hero-rule"></div>
+
+    <div class="hero-eyebrow">
+      Street to Shelf — 2026
+    </div>
+
+    <h1>
+      Seen. <em>Worn.</em>
+    </h1>
+
+    <p>
+      A photograph, reworked into art,
+      printed onto a garment.
+      DECORUM exists in both forms at once.
+    </p>
+
+  </div>
+
+  <span class="scroll-cue">
+    Scroll
+  </span>
+
+</section>
+
+<!-- INTRO -->
+
+<section class="intro reveal">
+
+  <p class="intro-quote">
+    Every piece begins on the street —
+    a photograph first, an
+    <span class="gold">artwork</span>
+    second, a garment last.
+  </p>
+
+  <div class="intro-right">
+
+    <div class="cube-scene">
+
+      <div class="cube">
+
+        <div class="face-front"></div>
+        <div class="face-back"></div>
+        <div class="face-right"></div>
+        <div class="face-left"></div>
+        <div class="face-top"></div>
+        <div class="face-bottom"></div>
+
+      </div>
+
+    </div>
+
+    <p>
+      A record of DECORUM —
+      photographs taken around Bloemfontein,
+      rebuilt into standalone compositions,
+      then printed exactly as they exist on the wall.
+    </p>
+
+  </div>
+
+</section>
+
+<!-- DISCOVERY -->
+
+<section
+  class="directory"
+  id="discovery">
+
+  <div class="directory-head reveal">
+
+    <span class="directory-kicker">
+      I · II · III · IV
+    </span>
+
+    <h2 class="directory-title">
+      Discover
+    </h2>
+
+  </div>
+
+  <div class="dir-grid">
+
+    <a
+      class="dir-item reveal"
+      href="art.html">
+
+      <span class="dir-num">
+        I
+      </span>
+
+      <span class="dir-note">
+        First form
+      </span>
+
+      <div class="dir-bottom">
+
+        <h2>
+          Art
+        </h2>
+
+        <span class="dir-arrow">
+          →
+        </span>
+
+      </div>
+
+    </a>
+
+    <a
+      class="dir-item reveal"
+      href="garments.html"
+      style="transition-delay:.06s">
+
+      <span class="dir-num">
+        II
+      </span>
+
+      <span class="dir-note">
+        Worn form
+      </span>
+
+      <div class="dir-bottom">
+
+        <h2>
+          Garments
+        </h2>
+
+        <span class="dir-arrow">
+          →
+        </span>
+
+      </div>
+
+    </a>
+
+    <a
+      class="dir-item reveal"
+      href="process.html"
+      style="transition-delay:.12s">
+
+      <span class="dir-num">
+        III
+      </span>
+
+      <span class="dir-note">
+        Construction
+      </span>
+
+      <div class="dir-bottom">
+
+        <h2>
+          Process
+        </h2>
+
+        <span class="dir-arrow">
+          →
+        </span>
+
+      </div>
+
+    </a>
+
+    <a
+      class="dir-item reveal"
+      href="collection.html"
+      style="transition-delay:.18s">
+
+      <span class="dir-num">
+        IV
+      </span>
+
+      <span class="dir-note">
+        Current pieces
+      </span>
+
+      <div class="dir-bottom">
+
+        <h2>
+          Collection
+        </h2>
+
+        <span class="dir-arrow">
+          →
+        </span>
+
+      </div>
+
+    </a>
+
+  </div>
+
+</section>
+
+<!-- SHOP -->
+
+<section class="shop reveal">
+
+  <div class="shop-copy">
+
+    <span class="shop-kicker">
+      DECORUM / AVAILABLE
+    </span>
+
+    <h2>
+      Shop.
+    </h2>
+
+    <p>
+      What exists now.
+      A small selection of pieces
+      from the current DECORUM collection.
+    </p>
+
+    <a
+      href="shop.html"
+      class="shop-link">
+
+      Enter shop
+
+      <span>
+        →
+      </span>
+
+    </a>
+
+  </div>
+
+  <a
+    href="shop.html"
+    class="shop-mark"
+    aria-label="Enter DECORUM Shop">
+
+    <span>
+      D
+    </span>
+
+  </a>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+  <span>
+    Decorum
+  </span>
+
+  <span>
+    Bloemfontein, ZA
+  </span>
+
+  <span>
+    <a href="contact.html">
+      Contact
+    </a>
+    &nbsp; / &nbsp;
+    <a href="#">
+      Instagram
+    </a>
+  </span>
+
+</footer>
+
+<script>
+(function(){
+
+  var gate =
+    document.getElementById('gate');
+
+  var track =
+    document.getElementById('gateTrack');
+
+  var handle =
+    document.getElementById('gateHandle');
+
+  var skip =
+    document.getElementById('gateSkip');
+
+  var reduced =
+    window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+  var unlocked = false;
+
+  function unlock(){
+
+    if(unlocked) return;
+
+    unlocked = true;
+
+    gate.classList.add('unlocking');
+
+    document.body.classList.remove(
+      'gate-active'
+    );
+
+    window.setTimeout(
+      function(){
+        gate.style.display='none';
+      },
+      reduced ? 0 : 800
+    );
+  }
+
+  if(reduced){
+
+    unlock();
+
+  }else{
+
+    skip.addEventListener(
+      'click',
+      function(e){
+        e.preventDefault();
+        unlock();
+      }
+    );
+
+    var dragging=false;
+    var startX=0;
+    var startLeft=0;
+    var maxLeft=0;
+
+    function bounds(){
+      maxLeft =
+        track.clientWidth - 4;
+    }
+
+    bounds();
+
+    window.addEventListener(
+      'resize',
+      bounds
+    );
+
+    function down(e){
+
+      dragging=true;
+
+      startX =
+        e.touches
+          ? e.touches[0].clientX
+          : e.clientX;
+
+      startLeft =
+        parseFloat(
+          handle.style.left || -7
+        );
+
+      handle.style.transition =
+        'none';
+    }
+
+    function move(e){
+
+      if(!dragging) return;
+
+      var x =
+        e.touches
+          ? e.touches[0].clientX
+          : e.clientX;
+
+      var delta =
+        x - startX;
+
+      var left =
+        Math.min(
+          Math.max(
+            -7,
+            startLeft + delta
+          ),
+          maxLeft - 7
+        );
+
+      handle.style.left =
+        left + 'px';
+    }
+
+    function up(){
+
+      if(!dragging) return;
+
+      dragging=false;
+
+      handle.style.transition =
+        'left .3s ease';
+
+      var left =
+        parseFloat(
+          handle.style.left || -7
+        );
+
+      var progress =
+        (left + 7) / maxLeft;
+
+      if(progress > .85){
+
+        handle.style.left =
+          (maxLeft - 7) + 'px';
+
+        window.setTimeout(
+          unlock,
+          200
+        );
+
+      }else{
+
+        handle.style.left =
+          '-7px';
+
+      }
+    }
+
+    handle.addEventListener(
+      'mousedown',
+      down
+    );
+
+    handle.addEventListener(
+      'touchstart',
+      down,
+      {passive:true}
+    );
+
+    window.addEventListener(
+      'mousemove',
+      move
+    );
+
+    window.addEventListener(
+      'touchmove',
+      move,
+      {passive:true}
+    );
+
+    window.addEventListener(
+      'mouseup',
+      up
+    );
+
+    window.addEventListener(
+      'touchend',
+      up
+    );
+
+  }
+
+  var io =
+    new IntersectionObserver(
+      function(entries){
+
+        entries.forEach(
+          function(en){
+
+            if(en.isIntersecting){
+
+              en.target.classList.add(
+                'in-view'
+              );
+
+            }
+
+          }
+        );
+
+      },
+      {
+        threshold:.15
+      }
+    );
+
+  document
+    .querySelectorAll('.reveal')
+    .forEach(
+      function(el){
+        io.observe(el);
+      }
+    );
+
+})();
+</script>
+
+</body>
+</html>
+```
