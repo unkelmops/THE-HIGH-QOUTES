@@ -1,1639 +1,769 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>DECORUM</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
 
 :root{
-  --bg:#0A0A0A;
-  --bg-raised:#121212;
-  --fg:#EDE8DD;
-  --grey:#8C877A;
-  --line:#2A2A26;
-  --gold:#C9A227;
-
-  --font-serif:'Cormorant Garamond', Georgia, serif;
-  --font-sans:'Inter', Arial, sans-serif;
+    --cream:#eee8dc;
+    --muted:#aaa398;
+    --black:#080807;
+    --gold:#b99a5d;
 }
 
-html{
-  scroll-behavior:smooth;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-@media (prefers-reduced-motion: reduce){
-  html{scroll-behavior:auto;}
-
-  *,
-  *::before,
-  *::after{
-    animation:none !important;
-    transition:none !important;
-  }
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:var(--black);
+    color:var(--cream);
 }
 
 body{
-  background:var(--bg);
-  color:var(--fg);
-  font-family:var(--font-sans);
-  font-weight:300;
-  overflow-x:hidden;
+    font-family:Inter,sans-serif;
 }
 
-body.gate-active{
-  overflow:hidden;
-  height:100svh;
+
+/* =========================================
+   EXPERIENCE
+========================================= */
+
+.experience{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
 }
 
-a{
-  color:inherit;
-  text-decoration:none;
+
+/* =========================================
+   SCENES
+========================================= */
+
+.scene{
+    position:absolute;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    background-size:cover;
+    background-position:center;
+
+    transition:
+        transform 2s cubic-bezier(.2,.8,.2,1),
+        opacity 1.4s ease,
+        filter 1.2s ease;
 }
 
-/* =========================================================
-   GRAIN
-========================================================= */
 
-.grain{
-  position:fixed;
-  inset:0;
-  z-index:300;
-  pointer-events:none;
-  opacity:.05;
-  mix-blend-mode:overlay;
+/* OUTSIDE */
 
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+.exterior{
+    z-index:2;
+    background-image:url("exterior.png");
+
+    transform:scale(1.02);
 }
 
-/* =========================================================
-   ENTRY GATE
-========================================================= */
 
-#gate{
-  position:fixed;
-  inset:0;
-  z-index:2000;
+/* FOYER */
 
-  background:var(--bg);
+.foyer{
+    z-index:1;
 
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+    background-image:url("foyer.png");
 
-  gap:34px;
-
-  transition:
-    transform .8s cubic-bezier(.76,0,.24,1),
-    opacity .6s ease;
-}
-
-#gate.unlocking{
-  transform:translateY(-100%);
-  opacity:.3;
-}
-
-.gate-logo{
-  font-family:var(--font-serif);
-  font-style:italic;
-  font-weight:500;
-  font-size:26px;
-  letter-spacing:1px;
-  color:var(--fg);
-}
-
-.gate-label{
-  font-size:10px;
-  letter-spacing:3px;
-  text-transform:uppercase;
-  color:var(--grey);
-  text-align:center;
-  padding:0 20px;
-}
-
-.gate-track{
-  position:relative;
-  width:min(300px,78vw);
-  height:1px;
-  background:var(--line);
-  margin-top:8px;
-}
-
-.gate-target{
-  position:absolute;
-  right:-6px;
-  top:50%;
-  transform:translateY(-50%);
-
-  width:12px;
-  height:12px;
-
-  border:1px solid var(--gold);
-  border-radius:50%;
-}
-
-.gate-handle{
-  position:absolute;
-  left:-7px;
-  top:50%;
-  transform:translateY(-50%);
-
-  width:14px;
-  height:14px;
-
-  border-radius:50%;
-  background:var(--gold);
-
-  cursor:grab;
-  touch-action:none;
-}
-
-.gate-handle:active{
-  cursor:grabbing;
-}
-
-.gate-skip{
-  font-size:9px;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  color:var(--grey);
-
-  border-bottom:1px solid var(--line);
-  padding-bottom:3px;
-  margin-top:12px;
-}
-
-/* =========================================================
-   NAV
-========================================================= */
-
-nav{
-  position:fixed;
-  top:0;
-  left:0;
-
-  width:100%;
-
-  padding:28px 5vw;
-
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-
-  z-index:1000;
-
-  background:linear-gradient(
-    180deg,
-    rgba(10,10,10,.7),
-    transparent
-  );
-}
-
-.logo{
-  font-family:var(--font-serif);
-  font-style:italic;
-  font-size:20px;
-  letter-spacing:.5px;
-}
-
-.nav-right{
-  display:flex;
-  align-items:center;
-  gap:22px;
-}
-
-.nav-index{
-  font-size:9px;
-  letter-spacing:3px;
-  text-transform:uppercase;
-  color:var(--grey);
-}
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero{
-  position:relative;
-
-  min-height:100svh;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  overflow:hidden;
-
-  border-bottom:1px solid var(--line);
-}
-
-.hero-media{
-  position:absolute;
-  inset:0;
-  z-index:0;
-  overflow:hidden;
-}
-
-.hero-media video,
-.hero-media .fallback{
-  width:100%;
-  height:100%;
-
-  object-fit:cover;
-
-  animation:driftzoom 30s ease-in-out infinite alternate;
-
-  opacity:.5;
-}
-
-@keyframes driftzoom{
-  from{
-    transform:scale(1);
-  }
-
-  to{
-    transform:scale(1.1);
-  }
-}
-
-.hero-media .fallback{
-  background:
-    radial-gradient(
-      ellipse at 50% 30%,
-      rgba(201,162,39,.08),
-      transparent 60%
-    ),
-    linear-gradient(
-      180deg,
-      #111 0%,
-      #0a0a0a 100%
-    );
-}
-
-.hero-media::after{
-  content:"";
-
-  position:absolute;
-  inset:0;
-
-  background:
-    radial-gradient(
-      ellipse at 50% 45%,
-      rgba(10,10,10,.2) 0%,
-      rgba(10,10,10,.88) 75%
-    );
-}
-
-.hero-content{
-  position:relative;
-  z-index:1;
-
-  text-align:center;
-
-  padding:0 20px;
-}
-
-.hero-rule{
-  width:1px;
-  height:60px;
-
-  background:
-    linear-gradient(
-      var(--gold),
-      transparent
-    );
-
-  margin:0 auto 28px;
-
-  opacity:0;
-
-  animation:
-    rule-in 1.2s ease .2s forwards;
-}
-
-@keyframes rule-in{
-  from{
     opacity:0;
-    height:0;
-  }
+    transform:scale(1.15);
 
-  to{
-    opacity:1;
-    height:60px;
-  }
+    filter:brightness(.6);
 }
 
-.hero-eyebrow{
-  font-size:10px;
-  letter-spacing:5px;
-  text-transform:uppercase;
 
-  color:var(--grey);
+/* =========================================
+   CINEMATIC OVERLAY
+========================================= */
 
-  margin-bottom:22px;
+.scene::after{
+    content:"";
 
-  opacity:0;
+    position:absolute;
+    inset:0;
 
-  animation:
-    fade-in 1s ease .6s forwards;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.35),
+            transparent 35%,
+            transparent 70%,
+            rgba(0,0,0,.3)
+        ),
+        linear-gradient(
+            0deg,
+            rgba(0,0,0,.45),
+            transparent 45%
+        );
 }
 
-.hero h1{
-  font-family:var(--font-serif);
-  font-style:italic;
-  font-weight:400;
 
-  font-size:clamp(52px,10vw,150px);
+/* =========================================
+   TOP BRAND
+========================================= */
 
-  line-height:1;
-  letter-spacing:0;
+.brand{
+    position:absolute;
 
-  color:var(--fg);
+    z-index:20;
 
-  opacity:0;
-  filter:blur(10px);
+    top:31px;
+    left:50%;
 
-  animation:
-    title-in 1.6s cubic-bezier(.16,1,.3,1) .9s forwards;
+    transform:translateX(-50%);
+
+    font-family:"Cormorant Garamond",serif;
+
+    font-size:29px;
+
+    letter-spacing:.32em;
+
+    white-space:nowrap;
 }
 
-.hero h1 em{
-  color:var(--gold);
-  font-style:italic;
+
+/* =========================================
+   LOCATION
+========================================= */
+
+.location{
+    position:absolute;
+
+    z-index:20;
+
+    top:38px;
+    right:40px;
+
+    font-size:8px;
+
+    letter-spacing:.28em;
+
+    color:var(--muted);
 }
 
-@keyframes title-in{
-  from{
+
+/* =========================================
+   ROMAN NAV
+========================================= */
+
+.roman{
+    position:absolute;
+
+    z-index:20;
+
+    top:38px;
+    left:40px;
+
+    display:flex;
+
+    gap:27px;
+}
+
+.roman button{
+    border:0;
+
+    background:none;
+
+    color:rgba(238,232,220,.65);
+
+    font-family:"Cormorant Garamond",serif;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:
+        color .3s ease,
+        transform .3s ease;
+}
+
+.roman button:hover{
+    color:white;
+
+    transform:translateY(-2px);
+}
+
+
+/* =========================================
+   ENTER
+========================================= */
+
+.enter{
+    position:absolute;
+
+    z-index:30;
+
+    bottom:36px;
+    right:40px;
+
+    display:flex;
+    align-items:center;
+
+    gap:15px;
+
+    color:var(--cream);
+
+    font-size:9px;
+
+    letter-spacing:.32em;
+
+    cursor:pointer;
+
+    transition:opacity .3s ease;
+}
+
+.enter:hover{
+    opacity:.55;
+}
+
+.arrow{
+    font-size:22px;
+}
+
+
+/* =========================================
+   DOOR HOTSPOT
+========================================= */
+
+.door{
+    position:absolute;
+
+    z-index:15;
+
+    /*
+       Adjust these values depending
+       on your exterior image.
+    */
+
+    left:43%;
+    top:48%;
+
+    width:15%;
+    height:35%;
+
+    cursor:pointer;
+
+    background:transparent;
+
+    border:0;
+}
+
+
+/* subtle glow when hovering */
+
+.door::after{
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border:1px solid transparent;
+
+    transition:
+        border .4s ease,
+        background .4s ease;
+}
+
+.door:hover::after{
+    border:1px solid rgba(238,232,220,.25);
+
+    background:rgba(255,255,255,.025);
+}
+
+
+/* =========================================
+   DOOR LABEL
+========================================= */
+
+.door-label{
+    position:absolute;
+
+    z-index:20;
+
+    left:50%;
+    top:43%;
+
+    transform:
+        translate(-50%,-50%)
+        translateY(15px);
+
     opacity:0;
-    filter:blur(10px);
-    transform:translateY(20px);
-  }
 
-  to{
+    font-family:"Cormorant Garamond",serif;
+
+    font-size:14px;
+
+    letter-spacing:.18em;
+
+    pointer-events:none;
+
+    transition:
+        opacity .4s ease,
+        transform .4s ease;
+}
+
+.door:hover + .door-label{
     opacity:1;
-    filter:blur(0);
-    transform:translateY(0);
-  }
+
+    transform:
+        translate(-50%,-50%)
+        translateY(0);
 }
 
-.hero p{
-  margin-top:26px;
 
-  font-size:15px;
-  color:var(--grey);
+/* =========================================
+   BOTTOM LINE
+========================================= */
 
-  max-width:38ch;
+.bottom-line{
+    position:absolute;
 
-  margin-left:auto;
-  margin-right:auto;
+    z-index:20;
 
-  line-height:1.8;
+    left:40px;
+    bottom:40px;
 
-  opacity:0;
+    width:31px;
 
-  animation:
-    fade-in 1s ease 1.6s forwards;
+    height:1px;
+
+    background:rgba(238,232,220,.8);
 }
 
-@keyframes fade-in{
-  from{
-    opacity:0;
-  }
 
-  to{
-    opacity:1;
-  }
-}
-
-.scroll-cue{
-  position:absolute;
-
-  bottom:34px;
-  left:50%;
-
-  transform:translateX(-50%);
-
-  font-size:9px;
-  letter-spacing:3px;
-
-  color:var(--grey);
-
-  text-transform:uppercase;
-}
-
-/* =========================================================
-   INTRO / DECORUM
-========================================================= */
+/* =========================================
+   INTRO FADE
+========================================= */
 
 .intro{
-  padding:150px 8vw;
+    position:absolute;
 
-  display:grid;
-  grid-template-columns:1fr 1fr;
+    z-index:100;
 
-  gap:80px;
+    inset:0;
 
-  align-items:center;
+    background:#080807;
 
-  border-bottom:1px solid var(--line);
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    transition:
+        opacity 1.5s ease,
+        visibility 1.5s ease;
 }
 
-.intro-quote{
-  font-family:var(--font-serif);
-  font-style:italic;
-  font-weight:400;
+.intro.hide{
+    opacity:0;
 
-  font-size:clamp(28px,3.4vw,44px);
-
-  line-height:1.35;
-
-  color:var(--fg);
+    visibility:hidden;
 }
 
-.intro-quote .gold{
-  color:var(--gold);
+.intro-logo{
+    font-family:"Cormorant Garamond",serif;
+
+    font-size:clamp(42px,7vw,90px);
+
+    font-weight:300;
+
+    letter-spacing:.3em;
+
+    margin-left:.3em;
+
+    animation:
+        logoIn 1.5s ease forwards;
 }
 
-.intro-right{
-  display:flex;
-  flex-direction:column;
-  gap:34px;
+@keyframes logoIn{
+
+    from{
+        opacity:0;
+
+        transform:
+            translateY(15px);
+    }
+
+    to{
+        opacity:1;
+
+        transform:
+            translateY(0);
+    }
+
 }
 
-.intro-right p{
-  font-size:14px;
-  color:var(--grey);
 
-  line-height:1.9;
+/* =========================================
+   DOOR OPEN TRANSITION
+========================================= */
 
-  max-width:42ch;
+.entering .exterior{
+
+    transform:
+        scale(1.18);
+
+    opacity:0;
+
+    filter:brightness(.35);
 }
 
-/* =========================================================
-   DECORUM CUBE
-========================================================= */
+.entering .foyer{
 
-.cube-scene{
-  width:90px;
-  height:90px;
+    z-index:10;
 
-  perspective:450px;
+    opacity:1;
+
+    transform:
+        scale(1.02);
+
+    filter:brightness(1);
 }
 
-.cube{
-  width:100%;
-  height:100%;
 
-  position:relative;
+/* =========================================
+   BLACK FLASH
+========================================= */
 
-  transform-style:preserve-3d;
+.flash{
+    position:absolute;
 
-  animation:
-    spin 20s linear infinite;
+    z-index:90;
+
+    inset:0;
+
+    background:#050504;
+
+    opacity:0;
+
+    pointer-events:none;
 }
 
-.cube div{
-  position:absolute;
+.entering .flash{
 
-  width:90px;
-  height:90px;
-
-  border:1px solid rgba(201,162,39,.55);
-
-  background:
-    rgba(201,162,39,.02);
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  overflow:hidden;
+    animation:
+        doorFlash 1.7s ease;
 }
 
-.cube div::after{
-  content:"DECORUM";
+@keyframes doorFlash{
 
-  position:absolute;
+    0%{
+        opacity:0;
+    }
 
-  font-family:var(--font-serif);
-  font-style:italic;
+    45%{
+        opacity:.9;
+    }
 
-  font-size:12px;
+    100%{
+        opacity:0;
+    }
 
-  letter-spacing:1px;
-
-  color:var(--fg);
-
-  opacity:.9;
-
-  white-space:nowrap;
 }
 
-.face-front{
-  transform:translateZ(45px);
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:700px){
+
+    .brand{
+        font-size:21px;
+
+        top:24px;
+    }
+
+    .location{
+        top:28px;
+
+        right:20px;
+
+        font-size:6px;
+    }
+
+    .roman{
+        top:65px;
+
+        left:20px;
+
+        gap:17px;
+    }
+
+    .roman button{
+        font-size:13px;
+    }
+
+    .enter{
+        right:20px;
+
+        bottom:24px;
+    }
+
+    .bottom-line{
+        left:20px;
+
+        bottom:28px;
+    }
+
+    .door{
+        left:35%;
+        top:45%;
+
+        width:30%;
+        height:40%;
+    }
+
 }
 
-.face-back{
-  transform:translateZ(-45px) rotateY(180deg);
-}
-
-.face-right{
-  transform:rotateY(90deg) translateZ(45px);
-}
-
-.face-left{
-  transform:rotateY(-90deg) translateZ(45px);
-}
-
-.face-top{
-  transform:rotateX(90deg) translateZ(45px);
-}
-
-.face-bottom{
-  transform:rotateX(-90deg) translateZ(45px);
-}
-
-@keyframes spin{
-  from{
-    transform:rotateX(0) rotateY(0);
-  }
-
-  to{
-    transform:rotateX(360deg) rotateY(360deg);
-  }
-}
-
-/* =========================================================
-   DISCOVERY
-========================================================= */
-
-.discovery{
-  position:relative;
-
-  min-height:100svh;
-
-  padding:150px 8vw 170px;
-
-  overflow:hidden;
-}
-
-.discovery-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-
-  margin-bottom:100px;
-}
-
-.discovery-kicker{
-  font-size:9px;
-  letter-spacing:4px;
-  text-transform:uppercase;
-
-  color:var(--grey);
-}
-
-.discovery-title{
-  font-family:var(--font-serif);
-  font-style:italic;
-
-  font-size:clamp(32px,5vw,64px);
-
-  font-weight:400;
-
-  color:var(--fg);
-}
-
-/* =========================================================
-   ROMAN NUMERAL GRID
-========================================================= */
-
-.chapter-grid{
-  position:relative;
-
-  display:grid;
-
-  grid-template-columns:
-    repeat(2, minmax(0,1fr));
-
-  border-top:1px solid var(--line);
-  border-left:1px solid var(--line);
-}
-
-.chapter{
-  position:relative;
-
-  min-height:42vh;
-
-  padding:45px;
-
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-
-  border-right:1px solid var(--line);
-  border-bottom:1px solid var(--line);
-
-  overflow:hidden;
-
-  transition:
-    background .5s ease;
-}
-
-.chapter::before{
-  content:"";
-
-  position:absolute;
-  inset:0;
-
-  background:
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(201,162,39,.07),
-      transparent 60%
-    );
-
-  opacity:0;
-
-  transition:opacity .6s ease;
-}
-
-.chapter:hover::before{
-  opacity:1;
-}
-
-.chapter:hover{
-  background:var(--bg-raised);
-}
-
-.chapter-number{
-  position:relative;
-  z-index:2;
-
-  font-family:var(--font-serif);
-  font-style:italic;
-
-  font-size:clamp(80px,13vw,190px);
-
-  line-height:.7;
-
-  color:rgba(237,232,221,.12);
-
-  transition:
-    color .5s ease,
-    transform .7s cubic-bezier(.16,1,.3,1);
-}
-
-.chapter:hover .chapter-number{
-  color:rgba(201,162,39,.8);
-
-  transform:
-    translateX(12px)
-    translateY(-4px);
-}
-
-.chapter-bottom{
-  position:relative;
-  z-index:2;
-
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-
-  gap:20px;
-}
-
-.chapter-name{
-  font-family:var(--font-serif);
-  font-style:italic;
-  font-weight:400;
-
-  font-size:clamp(30px,4vw,54px);
-
-  color:var(--fg);
-
-  opacity:.85;
-
-  transform:translateY(10px);
-
-  transition:
-    opacity .4s ease,
-    transform .5s ease,
-    color .4s ease;
-}
-
-.chapter:hover .chapter-name{
-  opacity:1;
-  transform:translateY(0);
-  color:var(--gold);
-}
-
-.chapter-arrow{
-  font-family:var(--font-serif);
-  font-size:25px;
-
-  color:var(--grey);
-
-  transform:translateX(-8px);
-
-  opacity:.5;
-
-  transition:
-    transform .5s ease,
-    opacity .4s ease,
-    color .4s ease;
-}
-
-.chapter:hover .chapter-arrow{
-  transform:translateX(0);
-  opacity:1;
-  color:var(--gold);
-}
-
-.chapter-note{
-  position:absolute;
-
-  right:45px;
-  top:45px;
-
-  font-size:8px;
-  letter-spacing:3px;
-
-  text-transform:uppercase;
-
-  color:var(--grey);
-
-  opacity:0;
-
-  transition:opacity .5s ease;
-}
-
-.chapter:hover .chapter-note{
-  opacity:1;
-}
-
-/* =========================================================
-   SHOP DISCOVERY
-========================================================= */
-
-.shop{
-  position:relative;
-
-  min-height:75vh;
-
-  padding:150px 8vw;
-
-  display:flex;
-
-  align-items:center;
-  justify-content:center;
-
-  text-align:center;
-
-  border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);
-
-  overflow:hidden;
-}
-
-.shop::before{
-  content:"SHOP";
-
-  position:absolute;
-
-  left:50%;
-  top:50%;
-
-  transform:
-    translate(-50%,-50%);
-
-  font-family:var(--font-serif);
-  font-style:italic;
-
-  font-size:clamp(120px,25vw,360px);
-
-  line-height:1;
-
-  white-space:nowrap;
-
-  color:rgba(237,232,221,.025);
-
-  pointer-events:none;
-}
-
-.shop-content{
-  position:relative;
-  z-index:2;
-}
-
-.shop-index{
-  font-family:var(--font-serif);
-  font-style:italic;
-
-  font-size:18px;
-
-  color:var(--gold);
-
-  margin-bottom:25px;
-}
-
-.shop h2{
-  font-family:var(--font-serif);
-  font-style:italic;
-  font-weight:400;
-
-  font-size:clamp(50px,8vw,100px);
-
-  line-height:.9;
-
-  margin-bottom:28px;
-}
-
-.shop p{
-  max-width:36ch;
-
-  margin:0 auto 38px;
-
-  font-size:13px;
-
-  line-height:1.9;
-
-  color:var(--grey);
-}
-
-.shop-link{
-  display:inline-flex;
-
-  align-items:center;
-
-  gap:18px;
-
-  padding-bottom:7px;
-
-  border-bottom:1px solid var(--gold);
-
-  font-size:10px;
-
-  letter-spacing:3px;
-
-  text-transform:uppercase;
-
-  color:var(--fg);
-
-  transition:
-    gap .4s ease,
-    color .4s ease;
-}
-
-.shop-link:hover{
-  gap:28px;
-  color:var(--gold);
-}
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-footer{
-  padding:36px 5vw;
-
-  display:flex;
-
-  justify-content:space-between;
-
-  align-items:center;
-
-  gap:20px;
-
-  color:var(--grey);
-
-  font-size:9px;
-
-  letter-spacing:2px;
-
-  text-transform:uppercase;
-
-  border-top:1px solid var(--line);
-}
-
-.footer-left,
-.footer-center,
-.footer-right{
-  flex:1;
-}
-
-.footer-center{
-  text-align:center;
-}
-
-.footer-right{
-  text-align:right;
-}
-
-.footer-links{
-  display:inline-flex;
-  gap:18px;
-}
-
-.footer-links a{
-  transition:color .3s ease;
-}
-
-.footer-links a:hover{
-  color:var(--fg);
-}
-
-/* =========================================================
-   REVEALS
-========================================================= */
-
-.reveal{
-  opacity:0;
-
-  transform:translateY(30px);
-
-  transition:
-    opacity 1s cubic-bezier(.16,1,.3,1),
-    transform 1s cubic-bezier(.16,1,.3,1);
-}
-
-.reveal.in-view{
-  opacity:1;
-  transform:translateY(0);
-}
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media(max-width:760px){
-
-  nav{
-    padding:22px 24px;
-  }
-
-  .nav-index{
-    display:none;
-  }
-
-  .intro{
-    grid-template-columns:1fr;
-
-    padding:100px 24px;
-
-    gap:50px;
-  }
-
-  .discovery{
-    padding:
-      100px
-      24px
-      120px;
-  }
-
-  .discovery-header{
-    margin-bottom:60px;
-
-    align-items:flex-start;
-
-    flex-direction:column;
-
-    gap:14px;
-  }
-
-  .chapter-grid{
-    grid-template-columns:1fr;
-  }
-
-  .chapter{
-    min-height:48vh;
-
-    padding:30px;
-  }
-
-  .chapter-number{
-    font-size:clamp(100px,30vw,180px);
-  }
-
-  .chapter-note{
-    right:30px;
-    top:30px;
-  }
-
-  .shop{
-    min-height:65vh;
-
-    padding:
-      100px
-      24px;
-  }
-
-  footer{
-    flex-direction:column;
-
-    align-items:flex-start;
-
-    padding:
-      30px 24px;
-  }
-
-  .footer-left,
-  .footer-center,
-  .footer-right{
-    flex:auto;
-    text-align:left;
-  }
-}
 </style>
 </head>
 
-<body class="gate-active">
 
-<!-- =========================================================
-     ENTRY
-========================================================= -->
+<body>
 
-<div id="gate">
 
-  <div class="gate-logo">
-    DECORUM
-  </div>
+<div class="experience" id="experience">
 
-  <div class="gate-label">
-    Draw the line to enter
-  </div>
 
-  <div class="gate-track" id="gateTrack">
+    <!-- =====================================
+         INTRO
+    ====================================== -->
 
-    <div class="gate-target"></div>
+    <div class="intro" id="intro">
 
-    <div class="gate-handle" id="gateHandle"></div>
+        <div class="intro-logo">
+            DECORUM
+        </div>
 
-  </div>
+    </div>
 
-  <a href="#" class="gate-skip" id="gateSkip">
-    Skip
-  </a>
+
+    <!-- =====================================
+         EXTERIOR
+    ====================================== -->
+
+    <div class="scene exterior"></div>
+
+
+    <!-- =====================================
+         FOYER
+    ====================================== -->
+
+    <div class="scene foyer"></div>
+
+
+    <!-- =====================================
+         TOP UI
+    ====================================== -->
+
+    <div class="brand">
+        DECORUM
+    </div>
+
+
+    <div class="location">
+        BLOEMFONTEIN / ZA
+    </div>
+
+
+    <!-- =====================================
+         ROMAN NAV
+    ====================================== -->
+
+    <nav class="roman">
+
+        <button onclick="openRoom('art')">
+            I
+        </button>
+
+        <button onclick="openRoom('house')">
+            II
+        </button>
+
+        <button onclick="openRoom('collection')">
+            III
+        </button>
+
+        <button onclick="openRoom('shop')">
+            IV
+        </button>
+
+    </nav>
+
+
+    <!-- =====================================
+         DOOR
+    ====================================== -->
+
+    <button
+        class="door"
+        onclick="enterHouse()"
+        aria-label="Enter DECORUM">
+    </button>
+
+
+    <div class="door-label">
+        ENTER
+    </div>
+
+
+    <!-- =====================================
+         BOTTOM
+    ====================================== -->
+
+    <div class="bottom-line"></div>
+
+
+    <div
+        class="enter"
+        onclick="enterHouse()">
+
+        ENTER
+
+        <span class="arrow">
+            →
+        </span>
+
+    </div>
+
+
+    <!-- TRANSITION -->
+
+    <div class="flash"></div>
+
 
 </div>
 
-<div class="grain"></div>
-
-<!-- =========================================================
-     QUIET NAV
-========================================================= -->
-
-<nav>
-
-  <a href="index.html" class="logo">
-    Decorum
-  </a>
-
-  <div class="nav-right">
-
-    <span class="nav-index">
-      I · II · III · IV
-    </span>
-
-  </div>
-
-</nav>
-
-<!-- =========================================================
-     HERO
-========================================================= -->
-
-<section class="hero">
-
-  <div class="hero-media">
-    <div class="fallback"></div>
-  </div>
-
-  <div class="hero-content">
-
-    <div class="hero-rule"></div>
-
-    <div class="hero-eyebrow">
-      Street to Shelf — 2026
-    </div>
-
-    <h1>
-      Seen. <em>Worn.</em>
-    </h1>
-
-    <p>
-      A photograph, reworked into art, printed onto a garment.
-      DECORUM exists in both forms at once.
-    </p>
-
-  </div>
-
-  <span class="scroll-cue">
-    Scroll
-  </span>
-
-</section>
-
-<!-- =========================================================
-     DECORUM INTRO
-========================================================= -->
-
-<section class="intro reveal">
-
-  <p class="intro-quote">
-    Every piece begins on the street —
-    a photograph first,
-    an <span class="gold">artwork</span> second,
-    a garment last.
-  </p>
-
-  <div class="intro-right">
-
-    <div class="cube-scene">
-
-      <div class="cube">
-
-        <div class="face-front"></div>
-        <div class="face-back"></div>
-        <div class="face-right"></div>
-        <div class="face-left"></div>
-        <div class="face-top"></div>
-        <div class="face-bottom"></div>
-
-      </div>
-
-    </div>
-
-    <p>
-      A record of DECORUM —
-      photographs taken around Bloemfontein,
-      rebuilt into standalone compositions,
-      then printed exactly as they exist on the wall.
-    </p>
-
-  </div>
-
-</section>
-
-<!-- =========================================================
-     I · II · III · IV
-========================================================= -->
-
-<section class="discovery">
-
-  <div class="discovery-header reveal">
-
-    <span class="discovery-kicker">
-      I · II · III · IV
-    </span>
-
-    <h2 class="discovery-title">
-      Discover
-    </h2>
-
-  </div>
-
-  <div class="chapter-grid">
-
-    <!-- I -->
-
-    <a
-      href="art.html"
-      class="chapter reveal"
-    >
-
-      <span class="chapter-number">
-        I
-      </span>
-
-      <span class="chapter-note">
-        First form
-      </span>
-
-      <div class="chapter-bottom">
-
-        <span class="chapter-name">
-          Art
-        </span>
-
-        <span class="chapter-arrow">
-          →
-        </span>
-
-      </div>
-
-    </a>
-
-    <!-- II -->
-
-    <a
-      href="garments.html"
-      class="chapter reveal"
-      style="transition-delay:.08s"
-    >
-
-      <span class="chapter-number">
-        II
-      </span>
-
-      <span class="chapter-note">
-        Worn form
-      </span>
-
-      <div class="chapter-bottom">
-
-        <span class="chapter-name">
-          Garments
-        </span>
-
-        <span class="chapter-arrow">
-          →
-        </span>
-
-      </div>
-
-    </a>
-
-    <!-- III -->
-
-    <a
-      href="process.html"
-      class="chapter reveal"
-      style="transition-delay:.16s"
-    >
-
-      <span class="chapter-number">
-        III
-      </span>
-
-      <span class="chapter-note">
-        Construction
-      </span>
-
-      <div class="chapter-bottom">
-
-        <span class="chapter-name">
-          Process
-        </span>
-
-        <span class="chapter-arrow">
-          →
-        </span>
-
-      </div>
-
-    </a>
-
-    <!-- IV -->
-
-    <a
-      href="collection.html"
-      class="chapter reveal"
-      style="transition-delay:.24s"
-    >
-
-      <span class="chapter-number">
-        IV
-      </span>
-
-      <span class="chapter-note">
-        Current pieces
-      </span>
-
-      <div class="chapter-bottom">
-
-        <span class="chapter-name">
-          Collection
-        </span>
-
-        <span class="chapter-arrow">
-          →
-        </span>
-
-      </div>
-
-    </a>
-
-  </div>
-
-</section>
-
-<!-- =========================================================
-     SHOP
-========================================================= -->
-
-<section class="shop reveal">
-
-  <div class="shop-content">
-
-    <div class="shop-index">
-      —
-    </div>
-
-    <h2>
-      Shop
-    </h2>
-
-    <p>
-      Pieces made from the work.
-      Discover the garments currently available.
-    </p>
-
-    <a
-      href="shop.html"
-      class="shop-link"
-    >
-      Enter shop
-      <span>→</span>
-    </a>
-
-  </div>
-
-</section>
-
-<!-- =========================================================
-     FOOTER
-========================================================= -->
-
-<footer>
-
-  <div class="footer-left">
-    DECORUM
-  </div>
-
-  <div class="footer-center">
-    Bloemfontein, ZA
-  </div>
-
-  <div class="footer-right">
-
-    <div class="footer-links">
-
-      <a href="contact.html">
-        Contact
-      </a>
-
-      <a href="#" target="_blank">
-        Instagram
-      </a>
-
-    </div>
-
-  </div>
-
-</footer>
-
-<!-- =========================================================
-     JAVASCRIPT
-========================================================= -->
 
 <script>
-(function(){
 
-  /* =========================
-     ENTRY GATE
-  ========================= */
 
-  var gate =
-    document.getElementById('gate');
+/* =========================================
+   INTRO
+========================================= */
 
-  var track =
-    document.getElementById('gateTrack');
+window.addEventListener("load",()=>{
 
-  var handle =
-    document.getElementById('gateHandle');
+    setTimeout(()=>{
 
-  var skip =
-    document.getElementById('gateSkip');
+        document
+            .getElementById("intro")
+            .classList.add("hide");
 
-  var reduced =
-    window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
+    },1800);
 
-  var unlocked = false;
+});
 
-  function unlock(){
 
-    if(unlocked) return;
+/* =========================================
+   ENTER HOUSE
+========================================= */
 
-    unlocked = true;
+let entered = false;
 
-    gate.classList.add('unlocking');
+function enterHouse(){
 
-    document.body.classList.remove(
-      'gate-active'
-    );
+    if(entered) return;
 
-    window.setTimeout(
-      function(){
+    entered = true;
 
-        gate.style.display='none';
+    const experience =
+        document.getElementById("experience");
 
-      },
-      reduced ? 0 : 800
-    );
-  }
+    /*
+       This is the important moment:
 
-  if(reduced){
+       exterior zooms away
+       foyer comes forward
+       black flash hides the image swap
+    */
 
-    unlock();
+    experience.classList.add("entering");
 
-  }else{
 
-    skip.addEventListener(
-      'click',
-      function(e){
+    /*
+       Give the transition time to complete,
+       then make the foyer the active scene.
+    */
 
-        e.preventDefault();
+    setTimeout(()=>{
 
-        unlock();
+        window.location.href =
+            "house.html";
 
-      }
-    );
+    },1800);
 
-    var dragging = false;
-    var startX = 0;
-    var startLeft = 0;
-    var maxLeft = 0;
+}
 
-    function bounds(){
 
-      maxLeft =
-        track.clientWidth - 4;
+/* =========================================
+   ROMAN NAV
+========================================= */
+
+function openRoom(room){
+
+    /*
+       Once the house exists,
+       these become direct room entrances.
+    */
+
+    if(room === "art"){
+
+        window.location.href =
+            "art.html";
 
     }
 
-    bounds();
+    if(room === "house"){
 
-    window.addEventListener(
-      'resize',
-      bounds
-    );
+        window.location.href =
+            "house.html";
 
-    function down(e){
-
-      dragging = true;
-
-      startX =
-        e.touches
-          ? e.touches[0].clientX
-          : e.clientX;
-
-      startLeft =
-        parseFloat(
-          handle.style.left || -7
-        );
-
-      handle.style.transition =
-        'none';
     }
 
-    function move(e){
+    if(room === "collection"){
 
-      if(!dragging) return;
+        window.location.href =
+            "collection.html";
 
-      var x =
-        e.touches
-          ? e.touches[0].clientX
-          : e.clientX;
-
-      var delta =
-        x - startX;
-
-      var left =
-        Math.min(
-          Math.max(
-            -7,
-            startLeft + delta
-          ),
-          maxLeft - 7
-        );
-
-      handle.style.left =
-        left + 'px';
     }
 
-    function up(){
+    if(room === "shop"){
 
-      if(!dragging) return;
+        window.location.href =
+            "shop.html";
 
-      dragging = false;
-
-      handle.style.transition =
-        'left .3s ease';
-
-      var left =
-        parseFloat(
-          handle.style.left || -7
-        );
-
-      var progress =
-        (left + 7) / maxLeft;
-
-      if(progress > .85){
-
-        handle.style.left =
-          (maxLeft - 7) + 'px';
-
-        window.setTimeout(
-          unlock,
-          200
-        );
-
-      }else{
-
-        handle.style.left =
-          '-7px';
-      }
     }
 
-    handle.addEventListener(
-      'mousedown',
-      down
-    );
+}
 
-    handle.addEventListener(
-      'touchstart',
-      down,
-      {passive:true}
-    );
-
-    window.addEventListener(
-      'mousemove',
-      move
-    );
-
-    window.addEventListener(
-      'touchmove',
-      move,
-      {passive:true}
-    );
-
-    window.addEventListener(
-      'mouseup',
-      up
-    );
-
-    window.addEventListener(
-      'touchend',
-      up
-    );
-  }
-
-  /* =========================
-     SCROLL REVEALS
-  ========================= */
-
-  var io =
-    new IntersectionObserver(
-      function(entries){
-
-        entries.forEach(
-          function(en){
-
-            if(en.isIntersecting){
-
-              en.target.classList.add(
-                'in-view'
-              );
-
-            }
-
-          }
-        );
-
-      },
-      {
-        threshold:.15
-      }
-    );
-
-  document
-    .querySelectorAll('.reveal')
-    .forEach(
-      function(el){
-
-        io.observe(el);
-
-      }
-    );
-
-})();
 </script>
 
 </body>
 </html>
-```
