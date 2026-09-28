@@ -8,15 +8,16 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
 
 :root{
     --cream:#eee8dc;
-    --muted:#aaa398;
+    --muted:#aaa49a;
     --black:#080807;
-    --gold:#b99a5d;
+    --line:rgba(238,232,220,.28);
 }
 
 *{
@@ -36,71 +37,46 @@ body{
 
 body{
     font-family:Inter,sans-serif;
+    font-weight:300;
 }
 
 
-/* =========================================
+/* =====================================================
    EXPERIENCE
-========================================= */
+===================================================== */
 
-.experience{
+#experience{
     position:relative;
     width:100vw;
     height:100vh;
     overflow:hidden;
+    background:#080807;
 }
 
 
-/* =========================================
-   SCENES
-========================================= */
+/* =====================================================
+   REAL HOUSE
+===================================================== */
 
-.scene{
+#house{
     position:absolute;
     inset:0;
 
-    width:100%;
-    height:100%;
-
+    background-image:url("foyer.png");
     background-size:cover;
-    background-position:center;
+    background-position:center center;
+
+    transform:scale(1.04);
 
     transition:
-        transform 2s cubic-bezier(.2,.8,.2,1),
-        opacity 1.4s ease,
-        filter 1.2s ease;
+        transform 2.5s cubic-bezier(.2,.8,.2,1),
+        filter 1.5s ease;
 }
 
 
-/* OUTSIDE */
+/* cinematic darkness */
 
-.exterior{
-    z-index:2;
-    background-image:url("exterior.png");
-
-    transform:scale(1.02);
-}
-
-
-/* FOYER */
-
-.foyer{
-    z-index:1;
-
-    background-image:url("foyer.png");
-
-    opacity:0;
-    transform:scale(1.15);
-
-    filter:brightness(.6);
-}
-
-
-/* =========================================
-   CINEMATIC OVERLAY
-========================================= */
-
-.scene::after{
+#house::after{
     content:"";
 
     position:absolute;
@@ -109,29 +85,40 @@ body{
     background:
         linear-gradient(
             90deg,
-            rgba(0,0,0,.35),
+            rgba(0,0,0,.42),
             transparent 35%,
             transparent 70%,
-            rgba(0,0,0,.3)
+            rgba(0,0,0,.32)
         ),
         linear-gradient(
             0deg,
             rgba(0,0,0,.45),
-            transparent 45%
+            transparent 42%
         );
+
+    pointer-events:none;
 }
 
 
-/* =========================================
-   TOP BRAND
-========================================= */
+/* =====================================================
+   SUBTLE CAMERA MOVEMENT
+===================================================== */
 
-.brand{
+#experience:hover #house{
+    transform:scale(1.055);
+}
+
+
+/* =====================================================
+   TOP BRAND
+===================================================== */
+
+.logo{
     position:absolute;
 
     z-index:20;
 
-    top:31px;
+    top:32px;
     left:50%;
 
     transform:translateX(-50%);
@@ -139,6 +126,7 @@ body{
     font-family:"Cormorant Garamond",serif;
 
     font-size:29px;
+    font-weight:400;
 
     letter-spacing:.32em;
 
@@ -146,49 +134,51 @@ body{
 }
 
 
-/* =========================================
+/* =====================================================
    LOCATION
-========================================= */
+===================================================== */
 
 .location{
     position:absolute;
 
     z-index:20;
 
-    top:38px;
-    right:40px;
+    top:39px;
+    right:42px;
 
     font-size:8px;
 
-    letter-spacing:.28em;
+    letter-spacing:.3em;
 
     color:var(--muted);
 }
 
 
-/* =========================================
-   ROMAN NAV
-========================================= */
+/* =====================================================
+   ROMAN NUMERALS
+===================================================== */
 
-.roman{
+.index{
     position:absolute;
 
     z-index:20;
 
-    top:38px;
-    left:40px;
+    top:39px;
+    left:42px;
 
     display:flex;
-
-    gap:27px;
+    gap:28px;
 }
 
-.roman button{
+.index button{
+    appearance:none;
+
     border:0;
+    outline:0;
 
     background:none;
 
-    color:rgba(238,232,220,.65);
+    color:rgba(238,232,220,.55);
 
     font-family:"Cormorant Garamond",serif;
 
@@ -201,31 +191,28 @@ body{
         transform .3s ease;
 }
 
-.roman button:hover{
+.index button:hover{
     color:white;
-
     transform:translateY(-2px);
 }
 
 
-/* =========================================
+/* =====================================================
    ENTER
-========================================= */
+===================================================== */
 
 .enter{
     position:absolute;
 
     z-index:30;
 
-    bottom:36px;
-    right:40px;
+    right:42px;
+    bottom:37px;
 
     display:flex;
     align-items:center;
 
     gap:15px;
-
-    color:var(--cream);
 
     font-size:9px;
 
@@ -233,80 +220,84 @@ body{
 
     cursor:pointer;
 
-    transition:opacity .3s ease;
+    transition:
+        opacity .3s ease,
+        transform .3s ease;
 }
 
 .enter:hover{
-    opacity:.55;
+    opacity:.6;
+    transform:translateX(3px);
 }
 
-.arrow{
-    font-size:22px;
+.enter-arrow{
+    font-size:20px;
 }
 
 
-/* =========================================
-   DOOR HOTSPOT
-========================================= */
+/* =====================================================
+   FRONT DOOR AREA
+===================================================== */
+
+/*
+   This is positioned over the doorway
+   in the realistic house image.
+
+   If your doorway is slightly different,
+   only change these four values.
+*/
 
 .door{
     position:absolute;
 
     z-index:15;
 
-    /*
-       Adjust these values depending
-       on your exterior image.
-    */
+    left:42%;
+    top:18%;
 
-    left:43%;
-    top:48%;
+    width:17%;
+    height:65%;
 
-    width:15%;
-    height:35%;
-
-    cursor:pointer;
+    border:0;
 
     background:transparent;
 
-    border:0;
+    cursor:pointer;
 }
 
 
-/* subtle glow when hovering */
+/* invisible interaction area */
 
-.door::after{
+.door::before{
     content:"";
 
     position:absolute;
-
     inset:0;
 
     border:1px solid transparent;
 
     transition:
-        border .4s ease,
-        background .4s ease;
+        border .5s ease,
+        background .5s ease;
 }
 
-.door:hover::after{
-    border:1px solid rgba(238,232,220,.25);
-
+.door:hover::before{
+    border-color:rgba(238,232,220,.2);
     background:rgba(255,255,255,.025);
 }
 
 
-/* =========================================
-   DOOR LABEL
-========================================= */
+/* =====================================================
+   DOOR MESSAGE
+===================================================== */
 
-.door-label{
+.door-message{
     position:absolute;
 
-    z-index:20;
+    z-index:25;
 
     left:50%;
-    top:43%;
+    top:50%;
 
     transform:
         translate(-50%,-50%)
@@ -314,20 +305,23 @@ body{
 
     opacity:0;
 
+    pointer-events:none;
+
     font-family:"Cormorant Garamond",serif;
 
-    font-size:14px;
+    font-size:16px;
 
     letter-spacing:.18em;
 
-    pointer-events:none;
+    white-space:nowrap;
 
     transition:
-        opacity .4s ease,
-        transform .4s ease;
+        opacity .5s ease,
+        transform .5s ease;
 }
 
-.door:hover + .door-label{
+.door:hover + .door-message{
+
     opacity:1;
 
     transform:
@@ -336,41 +330,39 @@ body{
 }
 
 
-/* =========================================
-   BOTTOM LINE
-========================================= */
+/* =====================================================
+   BOTTOM MARK
+===================================================== */
 
-.bottom-line{
+.bottom-mark{
     position:absolute;
 
     z-index:20;
 
-    left:40px;
+    left:42px;
     bottom:40px;
 
     width:31px;
-
     height:1px;
 
     background:rgba(238,232,220,.8);
 }
 
 
-/* =========================================
-   INTRO FADE
-========================================= */
+/* =====================================================
+   OPENING SCREEN
+===================================================== */
 
-.intro{
-    position:absolute;
-
-    z-index:100;
+#opening{
+    position:fixed;
 
     inset:0;
+
+    z-index:1000;
 
     background:#080807;
 
     display:flex;
-
     align-items:center;
     justify-content:center;
 
@@ -379,16 +371,16 @@ body{
         visibility 1.5s ease;
 }
 
-.intro.hide{
+#opening.hide{
     opacity:0;
-
     visibility:hidden;
 }
 
-.intro-logo{
+.opening-logo{
+
     font-family:"Cormorant Garamond",serif;
 
-    font-size:clamp(42px,7vw,90px);
+    font-size:clamp(45px,8vw,100px);
 
     font-weight:300;
 
@@ -397,146 +389,114 @@ body{
     margin-left:.3em;
 
     animation:
-        logoIn 1.5s ease forwards;
+        openingIn 1.6s ease;
 }
 
-@keyframes logoIn{
+@keyframes openingIn{
 
     from{
         opacity:0;
-
-        transform:
-            translateY(15px);
+        transform:translateY(15px);
     }
 
     to{
         opacity:1;
-
-        transform:
-            translateY(0);
+        transform:translateY(0);
     }
 
 }
 
 
-/* =========================================
-   DOOR OPEN TRANSITION
-========================================= */
+/* =====================================================
+   ENTER TRANSITION
+===================================================== */
 
-.entering .exterior{
+#experience.entering #house{
 
-    transform:
-        scale(1.18);
+    transform:scale(1.22);
 
-    opacity:0;
+    filter:brightness(.45);
 
-    filter:brightness(.35);
 }
 
-.entering .foyer{
+#experience.entering .door{
 
-    z-index:10;
+    pointer-events:none;
 
-    opacity:1;
-
-    transform:
-        scale(1.02);
-
-    filter:brightness(1);
 }
 
 
-/* =========================================
-   BLACK FLASH
-========================================= */
+/* =====================================================
+   BLACK TRANSITION
+===================================================== */
 
-.flash{
-    position:absolute;
+#transition{
 
-    z-index:90;
+    position:fixed;
 
     inset:0;
+
+    z-index:500;
 
     background:#050504;
 
     opacity:0;
 
     pointer-events:none;
+
+    transition:
+        opacity 1.2s ease;
 }
 
-.entering .flash{
+#experience.entering #transition{
 
-    animation:
-        doorFlash 1.7s ease;
-}
-
-@keyframes doorFlash{
-
-    0%{
-        opacity:0;
-    }
-
-    45%{
-        opacity:.9;
-    }
-
-    100%{
-        opacity:0;
-    }
+    opacity:1;
 
 }
 
 
-/* =========================================
+/* =====================================================
    MOBILE
-========================================= */
+===================================================== */
 
 @media(max-width:700px){
 
-    .brand{
+    .logo{
+        top:23px;
         font-size:21px;
-
-        top:24px;
     }
 
     .location{
-        top:28px;
-
+        top:29px;
         right:20px;
-
         font-size:6px;
     }
 
-    .roman{
-        top:65px;
-
+    .index{
+        top:66px;
         left:20px;
-
-        gap:17px;
+        gap:18px;
     }
 
-    .roman button{
+    .index button{
         font-size:13px;
     }
 
     .enter{
         right:20px;
-
         bottom:24px;
     }
 
-    .bottom-line{
+    .bottom-mark{
         left:20px;
-
         bottom:28px;
     }
 
     .door{
-        left:35%;
-        top:45%;
-
-        width:30%;
-        height:40%;
+        left:29%;
+        top:22%;
+        width:42%;
+        height:60%;
     }
 
 }
@@ -548,78 +508,75 @@ body{
 <body>
 
 
-<div class="experience" id="experience">
+<div id="experience">
 
 
-    <!-- =====================================
-         INTRO
-    ====================================== -->
+    <!-- =================================================
+         OPENING
+    ================================================= -->
 
-    <div class="intro" id="intro">
+    <div id="opening">
 
-        <div class="intro-logo">
+        <div class="opening-logo">
             DECORUM
         </div>
 
     </div>
 
 
-    <!-- =====================================
-         EXTERIOR
-    ====================================== -->
+    <!-- =================================================
+         REALISTIC HOUSE IMAGE
+    ================================================= -->
 
-    <div class="scene exterior"></div>
-
-
-    <!-- =====================================
-         FOYER
-    ====================================== -->
-
-    <div class="scene foyer"></div>
+    <div id="house"></div>
 
 
-    <!-- =====================================
-         TOP UI
-    ====================================== -->
+    <!-- =================================================
+         BRAND
+    ================================================= -->
 
-    <div class="brand">
+    <div class="logo">
         DECORUM
     </div>
 
+
+    <!-- =================================================
+         LOCATION
+    ================================================= -->
 
     <div class="location">
         BLOEMFONTEIN / ZA
     </div>
 
 
-    <!-- =====================================
-         ROMAN NAV
-    ====================================== -->
+    <!-- =================================================
+         ROMAN INDEX
+    ================================================= -->
 
-    <nav class="roman">
+    <nav class="index">
 
-        <button onclick="openRoom('art')">
+        <button onclick="openSection('I')">
             I
         </button>
 
-        <button onclick="openRoom('house')">
+        <button onclick="openSection('II')">
             II
         </button>
 
-        <button onclick="openRoom('collection')">
+        <button onclick="openSection('III')">
             III
         </button>
 
-        <button onclick="openRoom('shop')">
+        <button onclick="openSection('IV')">
             IV
         </button>
 
     </nav>
 
 
-    <!-- =====================================
-         DOOR
-    ====================================== -->
+    <!-- =================================================
+         FRONT DOOR
+    ================================================= -->
 
     <button
         class="door"
@@ -628,16 +585,16 @@ body{
     </button>
 
 
-    <div class="door-label">
+    <div class="door-message">
         ENTER
     </div>
 
 
-    <!-- =====================================
+    <!-- =================================================
          BOTTOM
-    ====================================== -->
+    ================================================= -->
 
-    <div class="bottom-line"></div>
+    <div class="bottom-mark"></div>
 
 
     <div
@@ -646,16 +603,18 @@ body{
 
         ENTER
 
-        <span class="arrow">
+        <span class="enter-arrow">
             →
         </span>
 
     </div>
 
 
-    <!-- TRANSITION -->
+    <!-- =================================================
+         TRANSITION
+    ================================================= -->
 
-    <div class="flash"></div>
+    <div id="transition"></div>
 
 
 </div>
@@ -664,16 +623,16 @@ body{
 <script>
 
 
-/* =========================================
-   INTRO
-========================================= */
+/* =====================================================
+   OPENING
+===================================================== */
 
-window.addEventListener("load",()=>{
+window.addEventListener("load",function(){
 
-    setTimeout(()=>{
+    setTimeout(function(){
 
         document
-            .getElementById("intro")
+            .getElementById("opening")
             .classList.add("hide");
 
     },1800);
@@ -681,84 +640,59 @@ window.addEventListener("load",()=>{
 });
 
 
-/* =========================================
+/* =====================================================
    ENTER HOUSE
-========================================= */
+===================================================== */
 
-let entered = false;
+let entering = false;
 
 function enterHouse(){
 
-    if(entered) return;
+    if(entering) return;
 
-    entered = true;
+    entering = true;
 
     const experience =
         document.getElementById("experience");
-
-    /*
-       This is the important moment:
-
-       exterior zooms away
-       foyer comes forward
-       black flash hides the image swap
-    */
 
     experience.classList.add("entering");
 
 
     /*
-       Give the transition time to complete,
-       then make the foyer the active scene.
+       The realistic house zooms forward.
+       The screen fades.
+       Then we enter the interior.
     */
 
-    setTimeout(()=>{
+    setTimeout(function(){
 
-        window.location.href =
-            "house.html";
+        window.location.href = "house.html";
 
-    },1800);
+    },1300);
 
 }
 
 
-/* =========================================
-   ROMAN NAV
-========================================= */
+/* =====================================================
+   ROMAN INDEX
+===================================================== */
 
-function openRoom(room){
+function openSection(section){
 
-    /*
-       Once the house exists,
-       these become direct room entrances.
-    */
-
-    if(room === "art"){
-
-        window.location.href =
-            "art.html";
-
+    if(section === "I"){
+        window.location.href = "art.html";
     }
 
-    if(room === "house"){
-
-        window.location.href =
-            "house.html";
-
+    if(section === "II"){
+        window.location.href = "house.html";
     }
 
-    if(room === "collection"){
-
-        window.location.href =
-            "collection.html";
-
+    if(section === "III"){
+        window.location.href = "collection.html";
     }
 
-    if(room === "shop"){
-
-        window.location.href =
-            "shop.html";
-
+    if(section === "IV"){
+        window.location.href = "shop.html";
     }
 
 }
